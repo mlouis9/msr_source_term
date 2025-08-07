@@ -53,18 +53,20 @@ def generate_inputs(dt, start_time, end_time, th_num_steps, initial_isotopics_fi
 with open('data/simulation_parameters/parameters.yaml', 'r') as f:
     params = yaml.safe_load(f)
 rated_power = params['rated_power']
+dts = params['dts']
+th_num_steps = params['th_num_steps']
 
 power_history = pd.read_csv('data/simulation_parameters/power_history.csv')
 power_history = power_history.to_numpy()
 
 # Create timesteps.csv
-timesteps = power_history[:]
-timesteps = np.concatenate(( np.linspace() ))
+timesteps = power_history[:,0]
+timesteps = np.concatenate([ np.arange(timesteps[i], timesteps[i+1], dts[i]) for i in range(len(timesteps) - 1) ] + [np.array([timesteps[-1]])])
+midpoints = np.concatenate([np.array([0]), (timesteps[1:] + timesteps[:-1])/2])
+df = pd.DataFrame.from_dict({'Timesteps': timesteps, 'Depletion Values': midpoints})
+df.to_csv('timesteps.csv', index=False)
 
 power_history = power_history[1:, :]
-dts = [32400, 34200, 3600]
-th_num_steps = 4
-
 generate_species_inputs()
 for index, row in enumerate(power_history):
     if index == 0:

@@ -1,0 +1,10 @@
+[AuxKernels]
+  [${element_name}]
+    type = ParsedAux
+    expression = '${element_name}SumSet * $${V} * $${at_per_bcm_to_moles_per_cm3}${additional_expression}'
+    functor_names = '${element_name}SumSet'
+    functor_symbols = '${element_name}SumSet'
+    variable = ${element_name}
+    execute_on = 'initial timestep_begin timestep_end'
+  []${next}
+[]

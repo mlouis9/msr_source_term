@@ -1,0 +1,6 @@
+[Variables]
+  [${isotope_name}]
+    type = INSFVScalarFieldVariable
+    solver_sys = '${isotope_name}'
+  []${next}
+[]

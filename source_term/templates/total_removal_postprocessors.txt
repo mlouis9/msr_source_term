@@ -1,0 +1,7 @@
+[Postprocessors]
+  [${isotope_name}_total_removal_post]
+    type = FunctionValuePostprocessor
+    function = ${isotope_name}_total_removal_func
+    indirect_dependencies = '${isotope_name_th_removal}${element_name}_removal'
+  []${next}
+[]

@@ -1,0 +1,8 @@
+[Postprocessors]
+  [${isotope_name}_gas]
+    type = Receiver
+  []
+  [${isotope_name}_th_removal]
+    type = Receiver
+  []${next}
+[]

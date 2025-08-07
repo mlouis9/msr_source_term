@@ -1,0 +1,7 @@
+
+####### Constants for ${isotope_name} #######
+${isotope_name}_molecular_diffusion_coef = ${molecular_diffusion_coef}
+${isotope_name}_fiss_yield = ${fiss_yield}
+${isotope_name}_decay_const = ${decay_const}
+${next}
+#################################

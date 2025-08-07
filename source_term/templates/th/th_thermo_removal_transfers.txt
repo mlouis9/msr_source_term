@@ -1,0 +1,9 @@
+[Transfers]
+  [${element_name}_removal_to_th]
+    type = MultiAppPostprocessorTransfer
+    from_multi_app = thermo
+    to_multi_app = species
+    from_postprocessor = ${element_name}_removal
+    to_postprocessor = ${element_name}_removal
+  []${next}
+[]

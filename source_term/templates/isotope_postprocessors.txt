@@ -1,0 +1,11 @@
+[Postprocessors]
+  [${isotope_name}]
+    type = BatemanConcentrationZAID
+    vectorpostprocessor = bateman
+    vector_name = core_concentration
+    zaid = ${isotope_zaid}
+    execute_on = 'timestep_begin timestep_end'
+    execution_order_group = 1
+    force_preaux = true
+  []${next}
+[]

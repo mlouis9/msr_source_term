@@ -1,0 +1,26 @@
+[Postprocessors]
+  ####### ${element_name} Postprocessors #######
+  [${element_name}_post]
+    type = ElementExtremeValue
+    variable = ${element_name}
+    execute_on = timestep_begin
+  []
+  [ep_MSCL_${element_name}]
+    type = ElementExtremeValue
+    variable = ep:MSCL:${element_name}
+    force_preaux = true
+  []
+  [ep_gas_ideal_${element_name}]
+    type = ElementExtremeValue
+    variable = ep:gas_ideal:${element_name}
+    force_preaux = true
+  []
+  [${element_name}_removal]
+    type = ParsedPostprocessor
+    expression = 'if(${element_name}_post >0, min(ep_gas_ideal_${element_name} / ${element_name}_post, 1), 0)'
+    pp_names = 'ep_gas_ideal_${element_name} ${element_name}_post'
+    pp_symbols = 'ep_gas_ideal_${element_name} ${element_name}_post'
+    force_postaux = true
+  []
+  #################################${next}
+[]

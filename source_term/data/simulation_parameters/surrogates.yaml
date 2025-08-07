@@ -1,0 +1,44 @@
+Pu:
+  - Pm
+  - Pa
+  - Cm
+U:
+  - Np
+  - Am
+Gd: []
+Nd:
+  - Y
+Ce:
+  - Pr
+  - Sm
+  - Eu
+La:
+  - Tb
+  - Dy
+  - Ho
+  - Tm
+  - Yb
+  - Lu
+Ba: []
+Cs: []
+Xe:
+  - Ne
+  - Rn
+I:
+  - Br
+Pd:
+  - Misc
+Rh: []
+Ru: []
+Tc: []
+Mo: []
+Zr: []
+Sr: []
+Kr: []
+Ni: []
+Fe: []
+Cr: []
+He: []
+Cl: []
+Na: []
+Ar: []

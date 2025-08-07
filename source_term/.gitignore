@@ -1,0 +1,7 @@
+*.csv
+*.e
+*.dat
+*.jitcache
+*.png
+*__pycache__
+*inputs

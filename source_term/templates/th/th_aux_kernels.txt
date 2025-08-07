@@ -1,0 +1,9 @@
+[AuxKernels]
+  [${isotope_name}_gas]
+    type = ParsedAux
+    expression = '${isotope_name} * ${element_name}_removal'
+    functor_names = '${isotope_name} ${element_name}_removal'
+    functor_symbols = '${isotope_name} ${element_name}_removal'
+    variable = ${isotope_name}_gas
+  []${next}
+[]

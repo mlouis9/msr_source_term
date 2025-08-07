@@ -1,0 +1,6 @@
+[AuxVariables]
+  [${isotope_name}_gas]
+    order = CONSTANT
+    family = MONOMIAL
+  []${next}
+[]

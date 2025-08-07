@@ -1,0 +1,8 @@
+[Functions]
+  [${isotope_name}_total_removal_func]
+    type = ParsedFunction
+    expression = 'if(${isotope_name_th_removal} >= 1, if(${element_name}_removal >= 1, ${max_removal_rate}, -log( 1 - ${isotope_name_th_removal} * ${element_name}_removal ) / ${dt} ), -log( 1 - ${isotope_name_th_removal} * ${element_name}_removal ) / ${dt} )'
+    symbol_names = '${th_removal_name}${element_name}_removal'
+    symbol_values = '${th_removal_name}${element_name}_removal'
+  []${next}
+[]

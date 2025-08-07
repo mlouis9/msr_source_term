@@ -1,0 +1,41 @@
+[FVKernels]
+  ####### ${isotope_name} Species Transport equation #######
+  [${isotope_name}_time_derivative]
+    type = FVFunctorTimeKernel
+    variable = ${isotope_name}
+  []
+  #[${isotope_name}_turbulent_diffusion]
+  #  type = FVDiffusion
+  #  coeff = 'turbulent_diffusion_coef'
+  #  variable = ${isotope_name}
+  #[]
+  #[${isotope_name}_molecular_diffusion]
+  #  type = FVDiffusion
+  #  coeff = $${${isotope_name}_molecular_diffusion_coef}
+  #  variable = ${isotope_name}
+  #[]
+  #[${isotope_name}_advection]
+  #  type = INSFVScalarFieldAdvection
+  #  rhie_chow_user_object = 'ins_rhie_chow_interpolator'
+  #  velocity_interp_method = 'average'
+  #  variable = ${isotope_name}
+  #[]
+  [${isotope_name}_decay]
+    type = FVCoupledForce
+    variable = ${isotope_name}
+    v = ${isotope_name}
+    coef = -$${${isotope_name}_decay_const}
+  []
+  [${isotope_name}_fission_production]
+    type = FVBodyForce
+    variable = ${isotope_name}
+    postprocessor = ${isotope_name}_fission_production
+  []
+  #[${isotope_name}_off_gas_removal]
+  #  type = FVCoupledForce
+  #  variable = ${isotope_name}
+  #  v = ${isotope_name}_mass_transfer_max
+  #  block = 'pump'
+  #[]
+  #################################${next}
+[]

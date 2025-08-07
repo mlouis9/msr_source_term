@@ -1,0 +1,7 @@
+[ICs]
+  [${element_name}]
+    type = ConstantIC
+    variable = ${element_name}
+    value = ${ic_value}
+  []${next}
+[]

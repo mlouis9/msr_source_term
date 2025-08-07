@@ -1,0 +1,30 @@
+[Transfers]
+  ####### ${isotope_name} Transfers #######
+  [${isotope_name}_th_removal]
+    type = MultiAppPostprocessorTransfer
+    from_multi_app = species
+    reduction_type = 'maximum'
+    from_postprocessor = ${isotope_name}_th_removal
+    to_postprocessor = ${isotope_name}_th_removal
+  []
+  [${isotope_name}_gas_to]
+    type = MultiAppGeometricInterpolationTransfer
+    to_multi_app = species
+    source_variable = ${isotope_name}_gas 
+    variable = ${isotope_name}
+  []
+  [${isotope_name}_initial_integral]
+    type = MultiAppVariableValueSamplePostprocessorTransfer
+    to_multi_app = species
+    source_variable = ${isotope_name}_gas
+    postprocessor = ${isotope_name}_initial_integral
+  []
+  [${isotope_name}_gas_from]
+    type = MultiAppPostprocessorTransfer
+    from_multi_app = species
+    reduction_type = 'maximum'
+    from_postprocessor = ${isotope_name}_gas
+    to_postprocessor = ${isotope_name}_gas
+  []
+  #################################${next}
+[]

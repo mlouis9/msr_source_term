@@ -1,0 +1,26 @@
+[Outputs]
+  [sum_sets_${index}]
+    type = CSV
+    show = '${sum_set_list}'
+  []
+  [gas_densities_${index}]
+    type = CSV
+    show = '${gas_densities_list}'
+  []
+  [thermo_removal_fractions_${index}]
+    type = CSV
+    show = '${thermo_removal_list}'
+    execute_on = 'timestep_end'
+  []
+  [th_removal_fractions_${index}]
+    type = CSV
+    show = '${th_removal_list}'
+    execute_on = 'timestep_end'
+  []
+  [bateman]
+    type = CSV
+    show = 'bateman'
+    file_base = 'results/isotopics_${index}'
+    execute_on = 'initial timestep_end'
+  []
+[]

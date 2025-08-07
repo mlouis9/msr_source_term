@@ -1,0 +1,440 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<YakXsS>
+  <Multigroup_Cross_Section_Libraries NGroup="1" Name="MSFR_Dep" Description="XS for Depletion">
+    <Multigroup_Cross_Section_Library ID="1" Ver="1.0" Generator="INL" TimeCreated="26/09/2023 10:10:19" Description="core">
+      <Tabulation>Burnup</Tabulation>
+      <Burnup>100.0</Burnup>
+      <ReferenceGridIndex>1</ReferenceGridIndex>
+      <AllReactions>N2N N3N Fission NNProton N2Alpha N4N Absorption NGamma NProton NDeuteron NTriton NAlpha NHelion NeutronVelocity</AllReactions>
+      <TablewiseReactions/>
+      <LibrarywiseReactions/>
+      <Table gridIndex="1">
+        <Isotope Name="LI6" L="3">
+          <N2N>0.000000E+00</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>1.599485E+00</Absorption>
+          <NGamma>6.121330E-05</NGamma>
+          <NProton>3.833060E-04</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>1.599040E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="LI7" L="3">
+          <N2N>4.031460E-06</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>8.172078E-05</Absorption>
+          <NGamma>7.709780E-05</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>5.915240E-07</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="F19" L="3">
+          <N2N>1.004780E-06</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>2.749060E-06</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>2.017975E-03</Absorption>
+          <NGamma>5.821950E-04</NGamma>
+          <NProton>9.957020E-05</NProton>
+          <NDeuteron>4.501750E-06</NDeuteron>
+          <NTriton>8.044840E-07</NTriton>
+          <NAlpha>1.327150E-03</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="U233" L="3">
+          <N2N>1.700850E-04</N2N>
+          <N3N>1.239360E-07</N3N>
+          <Fission>4.111760E+00</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>5.184940E-13</N4N>
+          <Absorption>4.574233E+00</Absorption>
+          <NGamma>4.623030E-01</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="TH232" L="3">
+          <N2N>1.572040E-03</N2N>
+          <N3N>1.256630E-05</N3N>
+          <Fission>8.986040E-03</Fission>
+          <NNProton>4.174530E-10</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>6.070167E-01</Absorption>
+          <NGamma>5.964460E-01</NGamma>
+          <NProton>1.571030E-08</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>2.001490E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="TH231" L="3">
+          <N2N>3.791980E-03</N2N>
+          <N3N>7.883290E-06</N3N>
+          <Fission>9.310430E-01</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>5.320110E-09</N4N>
+          <Absorption>3.209213E+00</Absorption>
+          <NGamma>2.274370E+00</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="TH233" L="3">
+          <N2N>5.824860E-03</N2N>
+          <N3N>1.419650E-05</N3N>
+          <Fission>5.331590E-01</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>2.516420E-08</N4N>
+          <Absorption>1.750008E+00</Absorption>
+          <NGamma>1.211010E+00</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="PA231" L="3">
+          <N2N>4.503410E-04</N2N>
+          <N3N>1.366860E-06</N3N>
+          <Fission>1.416090E-01</Fission>
+          <NNProton>8.176680E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>3.179971E+00</Absorption>
+          <NGamma>3.037910E+00</NGamma>
+          <NProton>1.529390E-07</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="PA233" L="3">
+          <N2N>1.169670E-03</N2N>
+          <N3N>8.619600E-06</N3N>
+          <Fission>3.041410E-02</Fission>
+          <NNProton>5.108090E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>3.140242E+00</Absorption>
+          <NGamma>3.108650E+00</NGamma>
+          <NProton>7.938900E-08</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="PA234" L="3">
+          <N2N>0.000000E+00</N2N>
+          <N3N>0.000000E+00</N3N>
+          <Fission>0.000000E+00</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>0.000000E+00</Absorption>
+          <NGamma>0.000000E+00</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="U232" L="3">
+          <N2N>7.516660E-05</N2N>
+          <N3N>2.064070E-07</N3N>
+          <Fission>2.155310E+00</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>3.116135E+00</Absorption>
+          <NGamma>9.607500E-01</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="U234" L="3">
+          <N2N>2.058370E-04</N2N>
+          <N3N>1.435070E-07</N3N>
+          <Fission>2.504290E-01</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>9.691980E-20</N4N>
+          <Absorption>1.398195E+00</Absorption>
+          <NGamma>1.147560E+00</NGamma>
+          <NProton>0.000000E+00</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>0.000000E+00</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="U235" L="3">
+          <N2N>1.130620E-03</N2N>
+          <N3N>1.047790E-06</N3N>
+          <Fission>3.181870E+00</Fission>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>4.328562E+00</Absorption>
+          <NGamma>1.145560E+00</NGamma>
+          <NProton>3.433660E-08</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>4.631970E-07</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="ZR95" L="3">
+          <N2N>6.060020E-04</N2N>
+          <N3N>4.075480E-07</N3N>
+          <NNProton>1.415220E-08</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>3.174178E-01</Absorption>
+          <NGamma>3.168110E-01</NGamma>
+          <NProton>9.664930E-08</NProton>
+          <NDeuteron>2.556740E-09</NDeuteron>
+          <NTriton>9.192040E-10</NTriton>
+          <NAlpha>2.450420E-07</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="NB95" L="3">
+          <N2N>2.030470E-04</N2N>
+          <N3N>2.135950E-07</N3N>
+          <NNProton>2.008670E-07</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>7.734406E-01</Absorption>
+          <NGamma>7.732300E-01</NGamma>
+          <NProton>5.104040E-06</NProton>
+          <NDeuteron>4.020680E-08</NDeuteron>
+          <NTriton>9.474440E-09</NTriton>
+          <NAlpha>1.982340E-06</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="Y91" L="3">
+          <N2N>2.759110E-04</N2N>
+          <N3N>4.174230E-07</N3N>
+          <NNProton>6.602490E-08</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>1.732498E-01</Absorption>
+          <NGamma>1.729720E-01</NGamma>
+          <NProton>1.045300E-06</NProton>
+          <NDeuteron>3.828160E-08</NDeuteron>
+          <NTriton>8.453560E-09</NTriton>
+          <NAlpha>3.315110E-07</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="ZR91" L="3">
+          <N2N>2.375520E-04</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>2.978780E-07</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>1.998525E-01</Absorption>
+          <NGamma>1.995210E-01</NGamma>
+          <NProton>1.640340E-05</NProton>
+          <NDeuteron>9.667800E-09</NDeuteron>
+          <NTriton>8.699270E-10</NTriton>
+          <NAlpha>7.727290E-05</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="TE131" L="3">
+          <N2N>1.001680E-03</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>5.578243E-02</Absorption>
+          <NGamma>5.478070E-02</NGamma>
+          <NProton>3.757020E-08</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>1.504480E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="TE131M" L="3">
+          <N2N>6.783610E-04</N2N>
+          <N3N>0.000000E+00</N3N>
+          <NNProton>0.000000E+00</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>9.487660E-02</Absorption>
+          <NGamma>9.419820E-02</NGamma>
+          <NProton>3.928420E-08</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>1.321750E-09</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="I131" L="3">
+          <N2N>2.210700E-04</N2N>
+          <N3N>4.438710E-07</N3N>
+          <NNProton>1.956210E-08</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>6.715387E-01</Absorption>
+          <NGamma>6.713170E-01</NGamma>
+          <NProton>7.847720E-08</NProton>
+          <NDeuteron>1.521410E-08</NDeuteron>
+          <NTriton>2.537170E-09</NTriton>
+          <NAlpha>3.657450E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="XE131" L="3">
+          <N2N>5.792140E-04</N2N>
+          <N3N>1.144190E-07</N3N>
+          <NNProton>8.925050E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>7.212911E-01</Absorption>
+          <NGamma>7.207100E-01</NGamma>
+          <NProton>1.390310E-06</NProton>
+          <NDeuteron>0.000000E+00</NDeuteron>
+          <NTriton>0.000000E+00</NTriton>
+          <NAlpha>3.943030E-07</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="I135" L="3">
+          <N2N>2.637790E-04</N2N>
+          <N3N>4.246420E-07</N3N>
+          <NNProton>8.703930E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>5.670674E-02</Absorption>
+          <NGamma>5.644240E-02</NGamma>
+          <NProton>2.389690E-08</NProton>
+          <NDeuteron>7.153000E-09</NDeuteron>
+          <NTriton>2.366900E-09</NTriton>
+          <NAlpha>9.273830E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="XE135" L="3">
+          <N2N>9.859500E-04</N2N>
+          <N3N>4.019710E-07</N3N>
+          <NNProton>1.522450E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>1.519195E-01</Absorption>
+          <NGamma>1.509330E-01</NGamma>
+          <NProton>4.428840E-08</NProton>
+          <NDeuteron>9.482940E-09</NDeuteron>
+          <NTriton>2.456860E-09</NTriton>
+          <NAlpha>4.826430E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="CS135" L="3">
+          <N2N>1.878120E-04</N2N>
+          <N3N>2.694920E-07</N3N>
+          <NNProton>5.494370E-08</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>5.774264E-01</Absorption>
+          <NGamma>5.772380E-01</NGamma>
+          <NProton>1.799160E-07</NProton>
+          <NDeuteron>3.190100E-08</NDeuteron>
+          <NTriton>3.619530E-09</NTriton>
+          <NAlpha>6.053930E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="CS137" L="3">
+          <N2N>2.795970E-04</N2N>
+          <N3N>5.395820E-07</N3N>
+          <NNProton>1.101190E-08</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>2.981023E-02</Absorption>
+          <NGamma>2.953000E-02</NGamma>
+          <NProton>3.284510E-08</NProton>
+          <NDeuteron>1.981360E-08</NDeuteron>
+          <NTriton>4.079210E-09</NTriton>
+          <NAlpha>2.676830E-08</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+        <Isotope Name="BA137" L="3">
+          <N2N>6.788760E-04</N2N>
+          <N3N>1.503990E-07</N3N>
+          <NNProton>6.561190E-09</NNProton>
+          <N2Alpha>0.000000E+00</N2Alpha>
+          <N4N>0.000000E+00</N4N>
+          <Absorption>1.207854E-01</Absorption>
+          <NGamma>1.201060E-01</NGamma>
+          <NProton>2.058690E-07</NProton>
+          <NDeuteron>2.952720E-08</NDeuteron>
+          <NTriton>3.511150E-09</NTriton>
+          <NAlpha>1.547890E-07</NAlpha>
+          <NHelion>0.000000E+00</NHelion>
+          <NeutronVelocity>141050288</NeutronVelocity>
+        </Isotope>
+      </Table>
+    </Multigroup_Cross_Section_Library>
+  </Multigroup_Cross_Section_Libraries>
+</YakXsS>
+<!-- LOG FILE
+# Starting activities ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 26/09/2023 10:10:19
+#  
+#     copying from file: /Users/walksa/projects/pebshufpy/wip/xs_generator/msfr_dep.source_mdx3.m
+#     copying to   file: ./_data/output/msfr_dep.source_mdx3_mdaa02_eq_point.m
+#   Reading/Loading SERPENT output files START =====================================================
+#     Reading file: ./_data/output/msfr_dep.source_mdx3_mdaa02_eq_point.m
+#     writing file: ./_output/output/msfr_dep_v000.xml
+#   Reading/Loading SERPENT output files END =======================================================
+#  
+#   Xsec. minor modification START =================================================================
+#     Material count ===============================================================================
+#     0 fissile materials, 0 non fissile materials
+#   Xsec. minor modification END ===================================================================
+#  
+#   XML XS data generation START ===================================================================
+#   XML XS data generation END =====================================================================
+#  
+#   Pushing equivalence data in START ==============================================================
+#   Pushing equivalence data in END ================================================================
+#  
+# End of activities ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 26/09/2023 10:10:19
+  -->

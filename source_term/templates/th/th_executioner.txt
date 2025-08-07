@@ -1,0 +1,13 @@
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  petsc_options_iname = '-pc_type  -pc_hypre_type'
+  petsc_options_value = 'hypre  boomeramg'
+  line_search = 'none'
+  nl_max_its = 30
+  automatic_scaling = true
+  compute_scaling_once = false
+  num_steps = ${th_num_steps}
+  end_time = ${dt}
+  system_names = '${system_names}'
+[]

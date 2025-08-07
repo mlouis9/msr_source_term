@@ -1,0 +1,6 @@
+####### Thermo constants #######
+thermofile = '${thermofile}'
+elements = '${thermo_elements_list}'
+temperature = ${temperature}
+pressure = ${pressure}
+#################################

@@ -1,0 +1,8 @@
+[Transfers]
+  [${element_name}]
+    type = MultiAppCopyTransfer
+    to_multi_app = thermo
+    source_variable = ${element_name} 
+    variable = ${element_name}
+  []${next}
+[]

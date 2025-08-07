@@ -1,0 +1,41 @@
+[Postprocessors]
+  ####### ${isotope_name} Postprocessors #######
+  [${isotope_name}_initial_integral]
+    type = ElementAverageValue
+    variable = '${isotope_name}'
+    execute_on = 'initial'
+  []
+  [${isotope_name}_integral]
+    type = ElementAverageValue
+    variable = '${isotope_name}'
+  []
+  [${isotope_name}_integral_no_removal]
+    type = FunctionValuePostprocessor
+    function = ${isotope_name}_analytic_solution_no_removal
+  []
+  [${isotope_name}_th_removal]
+    type = ParsedPostprocessor
+    expression = 'if(${isotope_name}_integral_no_removal > 0, if(1 - ${isotope_name}_integral / ${isotope_name}_integral_no_removal >= 0, 1 - ${isotope_name}_integral / ${isotope_name}_integral_no_removal, 0), 1)' # Note 1 is conservative
+    pp_names = '${isotope_name}_integral ${isotope_name}_integral_no_removal'
+  []
+  [${isotope_name}_fission_production]
+    type = ParsedPostprocessor
+    expression = '$${${isotope_name}_fiss_yield} * fiss_rate_density * ${element_name}_removal'
+    pp_names = 'fiss_rate_density ${element_name}_removal'
+    execute_on = 'timestep_begin'
+  []
+  [${isotope_name}_mass_transfer_max]
+    type = ElementExtremeValue
+    variable = ${isotope_name}_mass_transfer
+    value_type = min # Because mass transfer is negative term
+    block = pump
+    force_postaux = true
+    execute_on = 'timestep_begin'
+  []
+  [${isotope_name}_gas]
+    type = ElementExtremeValue
+    variable = ${isotope_name}
+    execute_on = 'initial timestep_begin'
+  []
+  #################################${next}
+[]

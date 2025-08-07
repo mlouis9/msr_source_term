@@ -1,0 +1,18 @@
+[AuxKernels]
+  ####### ${isotope_name} #######
+  [${isotope_name}_mass_transfer]
+    type = ParsedAux
+    expression = '-K_${isotope_name} * ${isotope_name} * ${A_interface} / ${V_pump}'
+    coupled_variables = '${isotope_name} K_${isotope_name}'
+    variable = '${isotope_name}_mass_transfer'
+    execute_on = 'timestep_begin'
+  []
+  [K_${isotope_name}]
+    type = ParsedAux
+    expression = '0.023 * $${${isotope_name}_molecular_diffusion_coef} / ${d} * (${rho} * ${d} * sqrt(superficial_vel_x^2 + superficial_vel_y^2 + superficial_vel_z^2) / ${mu})^(0.8) * (${mu}/${fparse rho * d})^(0.4)'
+    coupled_variables = 'superficial_vel_x superficial_vel_y superficial_vel_z'
+    variable = 'K_${isotope_name}'
+    execute_on = 'timestep_begin'
+  []
+  #################################${next}
+[]

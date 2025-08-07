@@ -1,0 +1,13 @@
+[Postprocessors]
+  [${element_name}SumSet]
+    type = ParsedPostprocessor
+    expression = 'if(${isotope_sum} > 0, ${isotope_sum}, ${initial_value} )'
+    pp_names = '${isotope_list}'
+    execute_on = 'initial timestep_begin timestep_end'
+    execution_order_group = 2
+    force_preaux = true
+  []
+  [${element_name}_removal]
+    type = Receiver
+  []${next}
+[]

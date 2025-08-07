@@ -1,0 +1,7 @@
+[Outputs]
+  csv = true
+  [th_removal]
+    type = CSV
+    show = '${th_removal_list}'
+  []
+[]

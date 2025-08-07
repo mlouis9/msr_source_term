@@ -1,0 +1,37 @@
+[VectorPostprocessors]
+  [bateman]
+    type = BatemanMultiVPP
+    scalar_fluxes = 'flux_g0'
+    use_power = true
+    watt_power = ${power}
+    region_volume = ${V}
+    
+    # Library specification
+    isoxml_mglib_file = '../mgxs_1g.xml'
+    isoxml_mglib_name = 'mgxs'
+    library_id = 1
+    grid_names = 'depletion_s'
+    grid_variables = 'depletion_s'
+    isoxml_dtlib_file = '../data/dt/endf_dtl.xml'
+    isoxml_dtlib_name = 'ENDF8'
+
+    # Isotope compositions
+    isotope_atomic_densities_names = '${initial_isotope_names}'
+    isotope_atomic_densities = '${initial_isotope_densities}'
+
+    # Removal rates
+    disposal_isotope_fixed_removal_rates_names = '${isotope_names}'
+    disposal_isotope_fixed_removal_rates = '${total_removal_rates}'
+    disposal_atomic_densities = '${disposal_atomic_densities}'
+
+    # Bateman solver
+    bateman_solver = 'CRAMIPF'
+    bateman_solver_tolerance = 1e-100
+    cram_ipf_order = 48
+    use_sparse_gaussian_elimination = true
+    track_secondary_particle_production = true
+    execute_on = 'timestep_end'
+    execution_order_group = 0
+    force_preaux = true
+  []
+[]

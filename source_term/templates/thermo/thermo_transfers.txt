@@ -1,0 +1,17 @@
+[Transfers]
+  ####### ${element_name} Transfers #######
+  [${element_name}_removal]
+    type = MultiAppPostprocessorTransfer
+    from_multi_app = thermo
+    reduction_type = 'maximum'
+    from_postprocessor = ${element_name}_removal
+    to_postprocessor = ${element_name}_removal
+  []
+  [${element_name}]
+    type = MultiAppCopyTransfer
+    to_multi_app = thermo
+    source_variable = ${element_name} 
+    variable = ${element_name}
+  []
+  #################################${next}
+[]

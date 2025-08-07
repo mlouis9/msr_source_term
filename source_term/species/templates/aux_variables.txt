@@ -1,0 +1,10 @@
+[AuxVariables]
+  [${isotope_name}_mass_transfer]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [K_${isotope_name}]
+    order = CONSTANT
+    family = MONOMIAL
+  []${next}
+[]

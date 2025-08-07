@@ -1,0 +1,7 @@
+[Postprocessors]
+  [${element_name}_removal]
+    type = Receiver
+    force_preic = true
+    execution_order_group = 0
+  []${next}
+[]

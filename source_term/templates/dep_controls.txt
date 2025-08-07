@@ -1,0 +1,13 @@
+[Times]
+  [first_timestep]
+    type = InputTimes
+    times = '${start_time} ${end_time}'
+  []
+[]
+[Controls]
+  [output_control]
+    type = TimesEnableControl
+    times = first_timestep
+    disable_objects = 'Outputs::thermo_removal_fractions_${index} Outputs::th_removal_fractions_${index}'
+  []
+[]

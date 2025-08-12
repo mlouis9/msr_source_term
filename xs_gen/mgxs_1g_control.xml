@@ -1,0 +1,15 @@
+<ISOXML Format="OPENMC" Name="mgxs" NGroup="1" NDLGroup="6" Mode="diffusion">
+  <Controls>
+    <ScatMatrixTol>0</ScatMatrixTol>
+  </Controls>
+  <Library ID="1" L="1" LType="1" Domain="cell" DataType="micro">
+    <Tabulation>depletion_s</Tabulation>
+    <depletion_s>0 3240000 3924000 3931200</depletion_s>
+    <AddData>Absorption NGamma NAlpha N2Alpha N2N N3N N4N NNProton NProton NDeuteron NTriton NHelion Scattering Transport Removal EnergyDeposition NeutronVelocity FissionSpectrum kappaFission nuFission Fission Flux</AddData>
+    <Directory>./</Directory>
+    <InputFile gridIndex="1">openmc_simulation_n0.h5 summary.h5</InputFile>
+    <InputFile gridIndex="2">openmc_simulation_n1.h5 summary.h5</InputFile>
+    <InputFile gridIndex="3">openmc_simulation_n2.h5 summary.h5</InputFile>
+    <InputFile gridIndex="4">openmc_simulation_n3.h5 summary.h5</InputFile>
+  </Library>
+</ISOXML>

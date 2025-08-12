@@ -157,22 +157,22 @@ def sphere_joining_cylinders(l_1, l_2, h):
     r = sqrt((l_1/2)**2 + x_1**2)
     return x_1, r
 
-x1 = openmc.XPlane(-76.2, boundary_type='vacuum')
-x2 = openmc.XPlane(76.2, boundary_type='vacuum')
-y1 = openmc.YPlane(-76.2, boundary_type='vacuum')
-y2 = openmc.YPlane(76.2, boundary_type='vacuum')
-z1 = openmc.ZPlane(-96.52, boundary_type='vacuum')
-z2 = openmc.ZPlane(96.52, boundary_type='vacuum')
+x1 = openmc.XPlane(-700.2, boundary_type='vacuum')
+x2 = openmc.XPlane(760.2, boundary_type='vacuum')
+y1 = openmc.YPlane(-760.2, boundary_type='vacuum')
+y2 = openmc.YPlane(760.2, boundary_type='vacuum')
+z1 = openmc.ZPlane(-960.52, boundary_type='vacuum')
+z2 = openmc.ZPlane(960.52, boundary_type='vacuum')
 
 # -------------------------
 # Capsule cylinder geometry
 # -------------------------
-capsule_cyl_ir = 0.4
-capsule_cyl_thickness = 0.005
-capsule_sphere_thickness = 0.010
+capsule_cyl_ir = 40
+capsule_cyl_thickness = 0.5
+capsule_sphere_thickness = 1
 capsule_cyl_or = capsule_cyl_ir + capsule_cyl_thickness
-capsule_cyl_height = 0.915
-capsule_tot_height = 1.51
+capsule_cyl_height = 91.5
+capsule_tot_height = 151
 capsule_cyl_to_piping_height = (capsule_tot_height - capsule_cyl_height)/2 
 inner_capsule_cyl = openmc.ZCylinder(r=capsule_cyl_ir)
 outer_capsule_cyl = openmc.ZCylinder(r=capsule_cyl_or)
@@ -188,12 +188,14 @@ outer_sphere_capsule_bot = openmc.ZPlane(-capsule_tot_height/2 - capsule_sphere_
 # Piping geometry
 # ---------------
 # Pump column: 6" NPS SCH.160 (https://pipestd.com/schedule-160-pipe-6-inch-dn150-mm/)
-pump_col_piping_ir = 0.06589
-pump_col_piping_thickness = 0.01826
+pump_col_piping_ir = 6.589
+pump_col_piping_thickness = 1.826
+pump_col_piping_or = pump_col_piping_ir + pump_col_piping_thickness
 
 # Loop: 4" NPS SCH.40 (https://pipestd.com/schedule-40-pipe-4-inch-dn100-mm/)
-loop_piping_ir = 0.05113
-loop_piping_thickness = 0.00602
+loop_piping_ir = 5.113
+loop_piping_thickness = 0.602
+loop_piping_or = loop_piping_ir + loop_piping_thickness
 
 # ---------------------------
 # Capsule top sphere geometry
@@ -216,8 +218,8 @@ outer_capsule_bot_sphere = openmc.Sphere(z0=-capsule_cyl_height/2 + x_1, r=r + c
 # --------------------
 # Loop piping geometry
 # --------------------
-loop_height = 1.855 # centerline to centerline
-loop_x_length = 1.75 # centerline to centerline
+loop_height = 185.5 # centerline to centerline
+loop_x_length = 175 # centerline to centerline
 transverse_pipe_length = loop_x_length - 2*loop_piping_ir
 lower_descending_pipe_length = (loop_height - capsule_tot_height)/2 - loop_piping_ir # Last term is to account for elbow
 
@@ -241,28 +243,26 @@ inner_upper_transverse_pipe = openmc.XCylinder(r=loop_piping_ir,z0=z0)
 outer_upper_transverse_pipe = openmc.XCylinder(r=loop_piping_ir + loop_piping_thickness,z0=z0)
 
 # Descending to lower transverse elbow
-elbow_r = loop_piping_ir + loop_piping_thickness/2
+major_radius = loop_piping_or
 z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
 x0 = loop_piping_ir+loop_piping_thickness
-inner_descending_to_lower_transverse_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+inner_descending_to_lower_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
 inner_end_descending_pipe = openmc.ZPlane(z0=z0)
 inner_begin_lower_transverse_pipe = openmc.XPlane(x0=x0)
 inner_descending_to_lower_transverse_elbow_corner_region = +openmc.XPlane(x0=x0-loop_piping_thickness) & +openmc.ZPlane(z0=z0-loop_piping_thickness)
 
-elbow_r = loop_piping_ir + loop_piping_thickness
 z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
 x0 = loop_piping_ir+loop_piping_thickness
-outer_descending_to_lower_transverse_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+outer_descending_to_lower_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 cone_z0 = z0 - loop_piping_ir - loop_piping_thickness
 cone_x0 = 0
 outer_end_descending_pipe = openmc.model.ZConeOneSided(r2=1,up=True,z0=cone_z0,x0=cone_x0)
 outer_begin_lower_transverse_pipe = openmc.model.XConeOneSided(r2=1,up=True,z0=cone_z0,x0=cone_x0)
 
-# Lower transverse to ascending elbow
-elbow_r = loop_piping_ir + loop_piping_thickness/2
+# Lower transverse to ascending elbow 
 z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
 x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
-inner_lower_transverse_to_ascending_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+inner_lower_transverse_to_ascending_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
 inner_end_lower_transverse_pipe = openmc.XPlane(x0=x0)
 inner_begin_ascending_pipe = openmc.ZPlane(z0=z0)
 inner_lower_transverse_to_ascending_elbow_corner_region = -openmc.XPlane(x0=x0+loop_piping_thickness) & +openmc.ZPlane(z0=z0-loop_piping_thickness)
@@ -270,17 +270,16 @@ inner_lower_transverse_to_ascending_elbow_corner_region = -openmc.XPlane(x0=x0+l
 elbow_r = loop_piping_ir + loop_piping_thickness
 z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
 x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
-outer_lower_transverse_to_ascending_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+outer_lower_transverse_to_ascending_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 cone_z0 = z0 - loop_piping_ir - loop_piping_thickness
 cone_x0 = x0 + loop_piping_ir + loop_piping_thickness
 outer_end_lower_transverse_pipe = openmc.model.XConeOneSided(r2=1,up=False,x0=cone_x0,z0=cone_z0)
 outer_begin_ascending_pipe = openmc.model.ZConeOneSided(r2=1,up=True,x0=cone_x0,z0=cone_z0)
 
 # Ascending to upper transverse elbow
-elbow_r = loop_piping_ir + loop_piping_thickness/2
 z0 = capsule_tot_height/2 + lower_descending_pipe_length - loop_piping_thickness
 x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
-inner_ascending_to_upper_transverse_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+inner_ascending_to_upper_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
 inner_begin_upper_transverse_pipe = openmc.XPlane(x0=x0)
 inner_end_ascending_pipe = openmc.ZPlane(z0=z0)
 inner_ascending_to_upper_transverse_elbow_corner_region = -openmc.XPlane(x0=x0+loop_piping_thickness) & -openmc.ZPlane(z0=z0+loop_piping_thickness)
@@ -288,7 +287,7 @@ inner_ascending_to_upper_transverse_elbow_corner_region = -openmc.XPlane(x0=x0+l
 elbow_r = loop_piping_ir + loop_piping_thickness
 z0 = capsule_tot_height/2 + lower_descending_pipe_length - loop_piping_thickness
 x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
-outer_ascending_to_upper_transverse_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+outer_ascending_to_upper_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 cone_z0 = z0 + loop_piping_ir + loop_piping_thickness
 cone_x0 = x0 + loop_piping_ir + loop_piping_thickness
 outer_begin_upper_transverse_pipe = openmc.model.XConeOneSided(r2=1,up=False,x0=cone_x0,z0=cone_z0)
@@ -304,23 +303,22 @@ inner_pump_column_pipe = openmc.ZCylinder(r=pump_col_piping_ir)
 outer_pump_column_pipe = openmc.ZCylinder(r=pump_col_piping_ir + pump_col_piping_thickness)
 
 # Pump column elbow
-elbow_r = pump_col_piping_ir + pump_col_piping_thickness/2
+major_radius = pump_col_piping_or
 z0 = capsule_tot_height/2 + pump_column_pipe_length - pump_col_piping_thickness
 x0 = pump_col_piping_ir + pump_col_piping_thickness
-inner_column_to_connector_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+inner_column_to_connector_elbow = openmc.YTorus(a=major_radius,b=pump_col_piping_ir,c=pump_col_piping_ir,z0=z0,x0=x0)
 inner_end_column = openmc.ZPlane(z0=z0)
 inner_begin_connector = openmc.XPlane(x0=x0)
 inner_column_to_connector_elbow_corner_region = -openmc.ZPlane(z0=z0+pump_col_piping_thickness) & +openmc.XPlane(x0=x0-pump_col_piping_thickness)
 
-elbow_r = pump_col_piping_ir + pump_col_piping_thickness
 z0 = capsule_tot_height/2 + pump_column_pipe_length - pump_col_piping_thickness
 x0 = pump_col_piping_ir + pump_col_piping_thickness
-outer_column_to_connector_elbow = openmc.YTorus(a=elbow_r,b=elbow_r,c=elbow_r,z0=z0,x0=x0)
+outer_column_to_connector_elbow = openmc.YTorus(a=major_radius,b=pump_col_piping_or,c=pump_col_piping_or,z0=z0,x0=x0)
 outer_end_column = openmc.ZPlane(z0=z0)
 outer_begin_connector = openmc.XPlane(x0=x0)
 
 # Pump column to loop piping conical connector
-conical_connector_length = 0.25 # Arbitrary, but change to match th model
+conical_connector_length = 25 # Arbitrary, but change to match th model
 inner_cone_slope = ((pump_col_piping_ir - loop_piping_ir)/(conical_connector_length - pump_col_piping_thickness))**2
 inner_zero_point_x = pump_col_piping_ir/sqrt(inner_cone_slope) + pump_col_piping_ir + pump_col_piping_thickness
 inner_zero_point_z = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
@@ -466,7 +464,8 @@ a = 22.9176
 plot1 = openmc.Plot()
 plot1.basis = 'xy'
 plot1.color_by = 'material'
-plot1.pixels = (1000, 1000)
+plot1.pixels = (5000, 5000)
+plot1.width = (400, 400)
 plot1.colors = {
     heu: 'red',
     # mgo: 'blue',
@@ -479,7 +478,8 @@ plot1.colors = {
 plot2 = openmc.Plot()
 plot2.basis = 'yz'
 plot2.color_by = 'material'
-plot2.pixels = (1000, 1000)
+plot2.pixels = (5000, 5000)
+plot2.width = (400, 400)
 plot2.colors = {
     heu: 'red',
     # mgo: 'blue',
@@ -493,7 +493,7 @@ plot3 = openmc.Plot()
 plot3.basis = 'xz'
 plot3.color_by = 'material'
 plot3.pixels = (5000, 5000)
-# plot3.width = (0.75, 0.75)
+plot3.width = (400, 400)
 # plot3.origin = (pump_col_piping_ir, 0, capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir)
 plot3.colors = {
     heu: 'red',
@@ -510,8 +510,8 @@ plots += [plot2,plot3]
 
 # vox_plot = openmc.Plot()
 # vox_plot.type = 'voxel'
-# vox_plot.width = (100., 100., 200.)
-# vox_plot.pixels = (400, 400,  800)
+# vox_plot.width = (400., 400., 400.)
+# vox_plot.pixels = (1000, 1000,  1000)
 # plots.append(vox_plot)
 
 plots.export_to_xml()

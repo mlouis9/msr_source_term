@@ -91,7 +91,12 @@ def create_model(element_position):
     b4c.temperature = T_fuel  #temperature in Kelvin
     b4c.set_density('g/cm3', 2.52)
     components = {
-        'B': 0.799981,
+        'B': {
+            'percent': 0.799981,
+            'enrichment': 80, # specified in MCRE-ENG-PRSNT-0029Rev1A
+            'enrichment_type': 'wo',
+            'enrichment_target': 'B10',
+        },
         'C': 0.200019,
     }
     b4c.add_components(components)
@@ -239,7 +244,6 @@ def create_model(element_position):
     inner_descending_to_lower_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     end_descending_pipe = openmc.ZPlane(z0=z0)
     begin_lower_transverse_pipe = openmc.XPlane(x0=x0)
-    descending_to_lower_transverse_elbow_corner_region = +openmc.XPlane(x0=x0-loop_piping_thickness) & +openmc.ZPlane(z0=z0-loop_piping_thickness) & -end_descending_pipe & -begin_lower_transverse_pipe
 
     z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
     x0 = loop_piping_ir+loop_piping_thickness
@@ -251,7 +255,6 @@ def create_model(element_position):
     inner_lower_transverse_to_ascending_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     end_lower_transverse_pipe = openmc.XPlane(x0=x0)
     begin_ascending_pipe = openmc.ZPlane(z0=z0)
-    lower_transverse_to_ascending_elbow_corner_region = -openmc.XPlane(x0=x0+loop_piping_thickness) & +openmc.ZPlane(z0=z0-loop_piping_thickness) & +end_lower_transverse_pipe & -begin_ascending_pipe
 
     major_radius = loop_piping_ir + loop_piping_thickness
     z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
@@ -264,7 +267,6 @@ def create_model(element_position):
     inner_ascending_to_upper_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     begin_upper_transverse_pipe = openmc.XPlane(x0=x0)
     end_ascending_pipe = openmc.ZPlane(z0=z0)
-    ascending_to_upper_transverse_elbow_corner_region = -openmc.XPlane(x0=x0+loop_piping_thickness) & -openmc.ZPlane(z0=z0+loop_piping_thickness) & +end_ascending_pipe & +begin_upper_transverse_pipe
 
     major_radius = loop_piping_ir + loop_piping_thickness
     z0 = capsule_tot_height/2 + lower_descending_pipe_length - loop_piping_thickness
@@ -287,7 +289,6 @@ def create_model(element_position):
     inner_column_to_connector_elbow = openmc.YTorus(a=major_radius,b=pump_col_piping_ir,c=pump_col_piping_ir,z0=z0,x0=x0)
     end_column = openmc.ZPlane(z0=z0)
     begin_connector = openmc.XPlane(x0=x0)
-    column_to_connector_elbow_corner_region = -openmc.ZPlane(z0=z0+pump_col_piping_thickness) & +openmc.XPlane(x0=x0-pump_col_piping_thickness) & +end_column & -begin_connector
 
     outer_column_to_connector_elbow = openmc.YTorus(a=major_radius,b=pump_col_piping_or,c=pump_col_piping_or,z0=z0,x0=x0)
 
@@ -296,12 +297,12 @@ def create_model(element_position):
     inner_cone_slope = ((pump_col_piping_ir - loop_piping_ir)/(conical_connector_length - pump_col_piping_thickness))**2
     inner_zero_point_x = pump_col_piping_ir/sqrt(inner_cone_slope) + pump_col_piping_ir + pump_col_piping_thickness
     inner_zero_point_z = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
-    inner_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=inner_cone_slope,up=False,x0=inner_zero_point_x,z0=inner_zero_point_z,boundary_type='transmission')
+    inner_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=inner_cone_slope,up=False,x0=inner_zero_point_x,z0=inner_zero_point_z)
 
     outer_cone_slope = ((pump_col_piping_ir + pump_col_piping_thickness - (loop_piping_ir + loop_piping_thickness))/(conical_connector_length - pump_col_piping_thickness))**2
     outer_zero_point_x = (pump_col_piping_ir + pump_col_piping_thickness)/sqrt(outer_cone_slope) + pump_col_piping_ir + pump_col_piping_thickness
     outer_zero_point_z = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
-    outer_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=outer_cone_slope,up=False,x0=outer_zero_point_x,z0=outer_zero_point_z,boundary_type='transmission')
+    outer_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=outer_cone_slope,up=False,x0=outer_zero_point_x,z0=outer_zero_point_z)
     end_upper_transverse_pipe = openmc.XPlane(x0=pump_col_piping_ir + conical_connector_length)
 
     # ------------------
@@ -381,11 +382,11 @@ def create_model(element_position):
     # Loop regions
     # ------------
     inner_descending_pipe_region = -inner_descending_pipe & -capsule_bot & +end_descending_pipe
-    inner_descending_to_lower_transverse_elbow_region = -inner_descending_to_lower_transverse_elbow & -end_descending_pipe & -begin_lower_transverse_pipe #& ~descending_to_lower_transverse_elbow_corner_region
+    inner_descending_to_lower_transverse_elbow_region = -inner_descending_to_lower_transverse_elbow & -end_descending_pipe & -begin_lower_transverse_pipe
     inner_lower_transverse_pipe_region = -inner_lower_transverse_pipe & +begin_lower_transverse_pipe & -end_lower_transverse_pipe
-    inner_lower_transverse_to_ascending_elbow_region = -inner_lower_transverse_to_ascending_elbow & +end_lower_transverse_pipe & -begin_ascending_pipe #& ~lower_transverse_to_ascending_elbow_corner_region
+    inner_lower_transverse_to_ascending_elbow_region = -inner_lower_transverse_to_ascending_elbow & +end_lower_transverse_pipe & -begin_ascending_pipe
     inner_ascending_pipe_region = -inner_ascending_pipe & +begin_ascending_pipe & -end_ascending_pipe
-    inner_ascending_to_upper_transverse_elbow_region = -inner_ascending_to_upper_transverse_elbow & +end_ascending_pipe & +begin_upper_transverse_pipe #& ~ascending_to_upper_transverse_elbow_corner_region
+    inner_ascending_to_upper_transverse_elbow_region = -inner_ascending_to_upper_transverse_elbow & +end_ascending_pipe & +begin_upper_transverse_pipe
     inner_upper_transverse_pipe_region = -inner_upper_transverse_pipe & -begin_upper_transverse_pipe & +end_upper_transverse_pipe
     inner_loop_region = inner_descending_pipe_region | \
                         inner_descending_to_lower_transverse_elbow_region | \
@@ -396,11 +397,11 @@ def create_model(element_position):
                         inner_upper_transverse_pipe_region
 
     outer_descending_pipe_region = -outer_descending_pipe & +inner_descending_pipe & -capsule_bot & +end_descending_pipe
-    outer_descending_to_lower_transverse_elbow_region = (-outer_descending_to_lower_transverse_elbow & +inner_descending_to_lower_transverse_elbow & -end_descending_pipe & -begin_lower_transverse_pipe) #| descending_to_lower_transverse_elbow_corner_region
+    outer_descending_to_lower_transverse_elbow_region = (-outer_descending_to_lower_transverse_elbow & +inner_descending_to_lower_transverse_elbow & -end_descending_pipe & -begin_lower_transverse_pipe)
     outer_lower_transverse_pipe_region = -outer_lower_transverse_pipe & +inner_lower_transverse_pipe & +begin_lower_transverse_pipe & -end_lower_transverse_pipe
-    outer_lower_transverse_to_ascending_elbow_region = (-outer_lower_transverse_to_ascending_elbow & +inner_lower_transverse_to_ascending_elbow & +end_lower_transverse_pipe & -begin_ascending_pipe) #| lower_transverse_to_ascending_elbow_corner_region
+    outer_lower_transverse_to_ascending_elbow_region = (-outer_lower_transverse_to_ascending_elbow & +inner_lower_transverse_to_ascending_elbow & +end_lower_transverse_pipe & -begin_ascending_pipe)
     outer_ascending_pipe_region = -outer_ascending_pipe & +inner_ascending_pipe & +begin_ascending_pipe & -end_ascending_pipe
-    outer_ascending_to_upper_transverse_elbow_region = (-outer_ascending_to_upper_transverse_elbow & +inner_ascending_to_upper_transverse_elbow & +end_ascending_pipe & +begin_upper_transverse_pipe) #| ascending_to_upper_transverse_elbow_corner_region
+    outer_ascending_to_upper_transverse_elbow_region = (-outer_ascending_to_upper_transverse_elbow & +inner_ascending_to_upper_transverse_elbow & +end_ascending_pipe & +begin_upper_transverse_pipe)
     outer_upper_transverse_pipe_region = -outer_upper_transverse_pipe & +inner_upper_transverse_pipe & -begin_upper_transverse_pipe & +end_upper_transverse_pipe
     outer_loop_region = outer_descending_pipe_region | \
                         outer_descending_to_lower_transverse_elbow_region | \
@@ -510,10 +511,6 @@ def create_model(element_position):
     b4c_cell.fill = b4c
     b4c_cell.region = control_element_region
 
-    # test_cell = openmc.Cell(name='test_cell')
-    # test_cell.fill = heu
-    # test_cell.region = -inner_capsule_cyl
-
     root_universe = openmc.Universe()
     root_universe.add_cell(heu_cell)
     root_universe.add_cell(vessel_cell)
@@ -521,7 +518,6 @@ def create_model(element_position):
     root_universe.add_cell(mgo_cell)
     root_universe.add_cell(ss316_cell)
     root_universe.add_cell(b4c_cell)
-    # root_universe.add_cell(test_cell)
 
     geometry = openmc.Geometry(root_universe)
 

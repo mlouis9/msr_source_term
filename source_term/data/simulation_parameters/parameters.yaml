@@ -1,3 +1,4 @@
 rated_power: 150000 # W
 th_num_steps: 4
 dts: [32400, 34200, 3600] # seconds
+blue_crab_executable: /projects/MCRE_studies/louime/bin/blue_crab-opt_v7

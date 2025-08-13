@@ -46,14 +46,8 @@ d = 0.10226 # m, pump hydraulic diameter
 # FV Kernels
 !include inputs/fv_kernels.i
 
-[UserObjects]
-  [fluid_solution]
-    type = SolutionUserObject
-    mesh = '../data/meshes/keps_pow_out.e'
-    system_variables = 'a_u_var a_v_var a_w_var superficial_vel_x superficial_vel_y superficial_vel_z pressure TKE TKED T mu_t'
-    timestep = LATEST
-  []
-[]
+# User Objects
+!include ../inputs/th_user_objects.i
 
 [ICs]
   [a_u_var]

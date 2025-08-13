@@ -93,7 +93,7 @@ max_removal_rate = 1
   []
   [PowerModulate]
     type = PiecewiseConstant
-    data_file = power_history.csv
+    data_file = 'data/simulation_parameters/power_history.csv'
     format = 'columns'
     x_title = 'Timesteps'
     y_title = 'Power Factor'
@@ -101,7 +101,7 @@ max_removal_rate = 1
   []
   [fiss_rate_density]
     type = PiecewiseConstant
-    data_file = fiss_rate_densities.csv
+    data_file = 'data/simulation_parameters/fiss_rate_densities.csv'
     format = 'columns'
     x_title = 'Timesteps'
     y_title = 'Fission Rate Density'

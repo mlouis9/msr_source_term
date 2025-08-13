@@ -6,6 +6,9 @@ import argparse
 import pandas as pd
 import yaml
 
+with open('data/simulation_parameters/parameters.yaml', 'r') as f:
+    params = yaml.safe_load(f)
+
 parser = argparse.ArgumentParser(
     prog='run_bateman.py',
     description='Runs a sequence of Bateman depletion calculations at different power levels (automatically normalized)',
@@ -20,8 +23,7 @@ num_procs = args.procs
 num_cores = args.cores
 input_only = args.input_only
 bluecrab_run_command = f"""
-ml use.moose moose-dev-openmpi/2025.07.22
-mpiexec -n {num_procs} moose-dev-exec "/projects/MCRE_studies/louime/bin/blue_crab-opt_v4 -i run_dep.i --n-threads={num_cores}"
+mpiexec -n {num_procs} {params['blue_crab_executable']} -i run_dep.i --n-threads={num_cores}
 """
 
 input_generator_run_command_template = Template(
@@ -50,8 +52,6 @@ def generate_inputs(dt, start_time, end_time, th_num_steps, initial_isotopics_fi
     })
     subprocess.run(input_generator_run_command, shell=True)
 
-with open('data/simulation_parameters/parameters.yaml', 'r') as f:
-    params = yaml.safe_load(f)
 rated_power = params['rated_power']
 dts = params['dts']
 th_num_steps = params['th_num_steps']

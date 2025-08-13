@@ -1,0 +1,5 @@
+*.xml
+*.png
+*.h5
+*.vti
+!mgxs_1g_control.xml

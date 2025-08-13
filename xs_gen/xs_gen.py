@@ -17,7 +17,7 @@ import pandas as pd
 def fuel_density(T): # Temp in K
     return 4.2126E+03 - 1.0686E+00 * T
 
-def create_model(element_position):
+def create_model(element_position, plots=False):
     T_fuel = 900 # K
     kg_per_m3_to_cm_per_cm3 = 0.001
     density = fuel_density(T_fuel) * kg_per_m3_to_cm_per_cm3
@@ -162,11 +162,11 @@ def create_model(element_position):
     # -------------------------
     # Capsule cylinder geometry
     # -------------------------
-    capsule_cyl_ir = 40          # chosen to preserve total fuel volume as in MCRE-ENG-PRSNT-0029Rev1A
-    capsule_cyl_thickness = 0.5  # from MCRE-ENG-PRSNT-0029Rev1A
-    capsule_sphere_thickness = 1 # from MCRE-ENG-PRSNT-0029Rev1A
-    capsule_cyl_height = 91.5    # from MCRE-ENG-PRSNT-0029Rev1A
-    capsule_tot_height = 151     # from MCRE-ENG-PRSNT-0029Rev1A
+    capsule_cyl_ir = 25.74447413524088 # chosen to preserve total fuel volumeof 0.331 m3 as in MCRE-ENG-PRSNT-0029Rev1A
+    capsule_cyl_thickness = 0.5        # from MCRE-ENG-PRSNT-0029Rev1A
+    capsule_sphere_thickness = 1       # from MCRE-ENG-PRSNT-0029Rev1A
+    capsule_cyl_height = 91.5          # from MCRE-ENG-PRSNT-0029Rev1A
+    capsule_tot_height = 151           # from MCRE-ENG-PRSNT-0029Rev1A
     capsule_cyl_or = capsule_cyl_ir + capsule_cyl_thickness
     capsule_cyl_to_piping_height = (capsule_tot_height - capsule_cyl_height)/2 
     inner_capsule_cyl = openmc.ZCylinder(r=capsule_cyl_ir)
@@ -196,19 +196,19 @@ def create_model(element_position):
     # Capsule top sphere geometry
     # ---------------------------
     # First get parameters for inner joining sphere
-    x_1, r = sphere_joining_cylinders(capsule_cyl_ir*2, pump_col_piping_ir*2, capsule_cyl_to_piping_height)
-    inner_capsule_top_sphere = openmc.Sphere(z0=capsule_cyl_height/2 - x_1, r=r)
+    x_1_upper, r_upper = sphere_joining_cylinders(capsule_cyl_ir*2, pump_col_piping_ir*2, capsule_cyl_to_piping_height)
+    inner_capsule_top_sphere = openmc.Sphere(z0=capsule_cyl_height/2 - x_1_upper, r=r_upper)
 
-    outer_capsule_top_sphere = openmc.Sphere(z0=capsule_cyl_height/2 - x_1, r=r + capsule_sphere_thickness)
+    outer_capsule_top_sphere = openmc.Sphere(z0=capsule_cyl_height/2 - x_1_upper, r=r_upper + capsule_sphere_thickness)
 
     # ------------------------------
     # Capsule bottom sphere geometry
     # ------------------------------
     # First get parameters for inner joining sphere
-    x_1, r = sphere_joining_cylinders(capsule_cyl_ir*2, loop_piping_ir*2, capsule_cyl_to_piping_height)
-    inner_capsule_bot_sphere = openmc.Sphere(z0=-capsule_cyl_height/2 + x_1, r=r)
+    x_1_lower, r_lower = sphere_joining_cylinders(capsule_cyl_ir*2, loop_piping_ir*2, capsule_cyl_to_piping_height)
+    inner_capsule_bot_sphere = openmc.Sphere(z0=-capsule_cyl_height/2 + x_1_lower, r=r_lower)
 
-    outer_capsule_bot_sphere = openmc.Sphere(z0=-capsule_cyl_height/2 + x_1, r=r + capsule_sphere_thickness)
+    outer_capsule_bot_sphere = openmc.Sphere(z0=-capsule_cyl_height/2 + x_1_lower, r=r_lower + capsule_sphere_thickness)
 
     # --------------------
     # Loop piping geometry
@@ -216,14 +216,14 @@ def create_model(element_position):
     loop_height = 185.5 # centerline to centerline (from MCRE-ENG-PRSNT-0029Rev1A)
     loop_x_length = 175 # centerline to centerline (from MCRE-ENG-PRSNT-0029Rev1A)
     transverse_pipe_length = loop_x_length - 2*loop_piping_ir
-    lower_descending_pipe_length = (loop_height - capsule_tot_height)/2 - loop_piping_ir # Last term is to account for elbow
+    descending_pipe_length = (loop_height - capsule_tot_height)/2 - loop_piping_ir # Last term is to account for elbow
 
     # Descending pipe
     inner_descending_pipe = openmc.ZCylinder(r=loop_piping_ir)
     outer_descending_pipe = openmc.ZCylinder(r=loop_piping_ir + loop_piping_thickness)
 
     # Lower transverse pipe
-    z0 = -capsule_tot_height/2 -lower_descending_pipe_length -loop_piping_ir
+    z0 = -capsule_tot_height/2 -descending_pipe_length -loop_piping_ir
     inner_lower_transverse_pipe = openmc.XCylinder(r=loop_piping_ir,z0=z0)
     outer_lower_transverse_pipe = openmc.XCylinder(r=loop_piping_ir + loop_piping_thickness,z0=z0)
 
@@ -233,50 +233,50 @@ def create_model(element_position):
     outer_ascending_pipe = openmc.ZCylinder(r=loop_piping_ir + loop_piping_thickness,x0=x0)
 
     # Upper transverse pipe
-    z0 = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
+    z0 = capsule_tot_height/2 + descending_pipe_length + loop_piping_ir
     inner_upper_transverse_pipe = openmc.XCylinder(r=loop_piping_ir,z0=z0)
     outer_upper_transverse_pipe = openmc.XCylinder(r=loop_piping_ir + loop_piping_thickness,z0=z0)
 
     # Descending to lower transverse elbow
     major_radius = loop_piping_or
-    z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
+    z0 = -capsule_tot_height/2 - descending_pipe_length + loop_piping_thickness
     x0 = loop_piping_ir+loop_piping_thickness
     inner_descending_to_lower_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     end_descending_pipe = openmc.ZPlane(z0=z0)
     begin_lower_transverse_pipe = openmc.XPlane(x0=x0)
 
-    z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
+    z0 = -capsule_tot_height/2 - descending_pipe_length + loop_piping_thickness
     x0 = loop_piping_ir+loop_piping_thickness
     outer_descending_to_lower_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 
     # Lower transverse to ascending elbow 
-    z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
+    z0 = -capsule_tot_height/2 - descending_pipe_length + loop_piping_thickness
     x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
     inner_lower_transverse_to_ascending_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     end_lower_transverse_pipe = openmc.XPlane(x0=x0)
     begin_ascending_pipe = openmc.ZPlane(z0=z0)
 
     major_radius = loop_piping_ir + loop_piping_thickness
-    z0 = -capsule_tot_height/2 - lower_descending_pipe_length + loop_piping_thickness
+    z0 = -capsule_tot_height/2 - descending_pipe_length + loop_piping_thickness
     x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
     outer_lower_transverse_to_ascending_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 
     # Ascending to upper transverse elbow
-    z0 = capsule_tot_height/2 + lower_descending_pipe_length - loop_piping_thickness
+    z0 = capsule_tot_height/2 + descending_pipe_length - loop_piping_thickness
     x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
     inner_ascending_to_upper_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_ir,c=loop_piping_ir,z0=z0,x0=x0)
     begin_upper_transverse_pipe = openmc.XPlane(x0=x0)
     end_ascending_pipe = openmc.ZPlane(z0=z0)
 
     major_radius = loop_piping_ir + loop_piping_thickness
-    z0 = capsule_tot_height/2 + lower_descending_pipe_length - loop_piping_thickness
+    z0 = capsule_tot_height/2 + descending_pipe_length - loop_piping_thickness
     x0 = loop_piping_ir + transverse_pipe_length - loop_piping_thickness
     outer_ascending_to_upper_transverse_elbow = openmc.YTorus(a=major_radius,b=loop_piping_or,c=loop_piping_or,z0=z0,x0=x0)
 
     # --------------------
     # Pump column geometry
     # --------------------
-    pump_column_pipe_length = lower_descending_pipe_length + loop_piping_ir - pump_col_piping_ir # Such that elbow centerline aligns with loop piping centerline
+    pump_column_pipe_length = descending_pipe_length + loop_piping_ir - pump_col_piping_ir # Such that elbow centerline aligns with loop piping centerline
 
     # Pump column
     inner_pump_column_pipe = openmc.ZCylinder(r=pump_col_piping_ir)
@@ -296,12 +296,12 @@ def create_model(element_position):
     conical_connector_length = 25 # Arbitrary, but change to match th model
     inner_cone_slope = ((pump_col_piping_ir - loop_piping_ir)/(conical_connector_length - pump_col_piping_thickness))**2
     inner_zero_point_x = pump_col_piping_ir/sqrt(inner_cone_slope) + pump_col_piping_ir + pump_col_piping_thickness
-    inner_zero_point_z = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
+    inner_zero_point_z = capsule_tot_height/2 + descending_pipe_length + loop_piping_ir
     inner_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=inner_cone_slope,up=False,x0=inner_zero_point_x,z0=inner_zero_point_z)
 
     outer_cone_slope = ((pump_col_piping_ir + pump_col_piping_thickness - (loop_piping_ir + loop_piping_thickness))/(conical_connector_length - pump_col_piping_thickness))**2
     outer_zero_point_x = (pump_col_piping_ir + pump_col_piping_thickness)/sqrt(outer_cone_slope) + pump_col_piping_ir + pump_col_piping_thickness
-    outer_zero_point_z = capsule_tot_height/2 + lower_descending_pipe_length + loop_piping_ir
+    outer_zero_point_z = capsule_tot_height/2 + descending_pipe_length + loop_piping_ir
     outer_column_elbow_to_piping_connector = openmc.model.XConeOneSided(r2=outer_cone_slope,up=False,x0=outer_zero_point_x,z0=outer_zero_point_z)
     end_upper_transverse_pipe = openmc.XPlane(x0=pump_col_piping_ir + conical_connector_length)
 
@@ -311,8 +311,8 @@ def create_model(element_position):
     reflector_height = 226            # taken from MCRE-ENG-PRSNT-0029Rev1A
     reflector_long_side_length = 165  # taken from MCRE-ENG-PRSNT-0029Rev1A
     reflector_short_side_length = 115 # taken from MCRE-ENG-PRSNT-0029Rev1A
-    cavity_height = 200               # Assumed, not given in model description
-    cavity_width = 100                # Assumed, not given in model description
+    cavity_height = 140               # Assumed, not given in model description
+    cavity_width = 60                 # Assumed, not given in model description
     reflector = openmc.model.CruciformPrism(
         distances=[reflector_short_side_length/2,reflector_long_side_length/2],
         boundary_type='transmission',
@@ -322,6 +322,8 @@ def create_model(element_position):
         ymin=-cavity_width/2,ymax=cavity_width/2,
         zmin=-cavity_height/2,zmax=cavity_height/2,
     )
+    reflector_top = openmc.ZPlane(z0=reflector_height/2)
+    reflector_bot = openmc.ZPlane(z0=-reflector_height/2)
 
     # ------------
     # KCS geometry
@@ -329,6 +331,8 @@ def create_model(element_position):
     element_ir = 2.851       # 2" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     element_or = 3.016       # 2" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     element_height = 95.3    # from MCRE-ENG-PRSNT-0029Rev1A
+    max_element_travel = 112
+    max_element_height = element_height + max_element_travel
     gt_ir = 3.49             # 2.5" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     gt_or = 3.65             # 2.5" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     element_clearance = 2.54 # from MCRE-ENG-PRSNT-0029Rev1A
@@ -357,7 +361,7 @@ def create_model(element_position):
     element_bot = openmc.ZPlane(z0=-element_height/2 + element_position)
     element_top = openmc.ZPlane(z0=element_height/2 + element_position)
     gt_bot = openmc.ZPlane(z0=-element_height/2)
-    gt_top = openmc.ZPlane(z0=element_height/2)
+    gt_top = openmc.ZPlane(z0=max_element_height/2)
 
     # Universe boundary
     eps = 1 # 1 cm of extra room to avoid issues with reflector surfaces that would otherwise be coincident with some of these boundaries
@@ -373,6 +377,72 @@ def create_model(element_position):
     y2 = openmc.YPlane(ymax + eps, boundary_type='vacuum')
     z1 = openmc.ZPlane(zmin - eps, boundary_type='vacuum')
     z2 = openmc.ZPlane(zmax + eps, boundary_type='vacuum')
+
+    ###############################################################################
+    #                           Fuel Volume Calculation
+    ###############################################################################
+
+    def vol_of_sphere_joining_cylinders(h_1, h_2, R):
+        """This the volume of the lower spherical cap minus the volume of the smaller
+        upper spherical cap"""
+        return pi/3*(h_1**2*(3*R - h_1) - h_2**2*(3*R-h_2))
+
+    # --------------
+    # Capsule volume
+    # --------------
+    capsule_cyl_vol = pi * capsule_cyl_ir**2 * capsule_cyl_height
+    h_1 = r_upper - x_1_upper
+    h_2 = r_upper - capsule_cyl_to_piping_height - x_1_upper
+    capsule_upper_sphere_vol = vol_of_sphere_joining_cylinders(h_1, h_2, r_upper) # Volume of a spherical cap (from https://en.wikipedia.org/wiki/Spherical_cap)
+    h_1 = r_lower - x_1_lower
+    h_2 = r_lower - capsule_cyl_to_piping_height - x_1_lower
+    capsule_lower_sphere_vol = vol_of_sphere_joining_cylinders(h_1, h_2, r_lower) # Volume of a spherical cap (from https://en.wikipedia.org/wiki/Spherical_cap)
+    capsule_volume = capsule_cyl_vol + \
+                     capsule_upper_sphere_vol + \
+                     capsule_lower_sphere_vol
+
+    # -----------
+    # Loop volume
+    # -----------
+    # Pipes
+    loop_pipe_cross_sectional_area = pi * loop_piping_ir**2
+    descending_pipe_volume = loop_pipe_cross_sectional_area * (descending_pipe_length - loop_piping_thickness)
+    lower_transverse_pipe_volume = loop_pipe_cross_sectional_area * (transverse_pipe_length - 2*loop_piping_thickness)
+    ascending_pipe_volume = loop_pipe_cross_sectional_area * (capsule_tot_height + 2*descending_pipe_length - 2*loop_piping_thickness)
+    upper_transverse_pipe_volume = loop_pipe_cross_sectional_area * (loop_piping_ir + transverse_pipe_length - loop_piping_thickness - (pump_col_piping_ir + conical_connector_length))
+
+    # Elbows
+    # Note: each elbow is 1/4 of the volume of a torus; volume obtained from https://en.wikipedia.org/wiki/Torus
+    def torus_vol(R, r):
+        return 2*pi**2*R*r**2
+    
+    elbow_volume = 1/4*torus_vol(loop_piping_or, loop_piping_ir)
+
+    # Total loop volume
+    loop_volume = descending_pipe_volume + \
+                  lower_transverse_pipe_volume + \
+                  ascending_pipe_volume + \
+                  upper_transverse_pipe_volume + \
+                  3 * elbow_volume
+
+    # --------------------------------
+    # Pump column and connector volume
+    # --------------------------------
+    pump_column_volume = pi * pump_col_piping_ir**2 * (pump_column_pipe_length - pump_col_piping_thickness) 
+    column_to_connector_elbow_volume = 1/4*torus_vol(pump_col_piping_or, pump_col_piping_ir)
+    distance_to_connector_end = inner_zero_point_x - (pump_col_piping_ir + conical_connector_length)
+    distance_to_connector_begin = distance_to_connector_end + conical_connector_length - pump_col_piping_thickness
+    connector_volume = pi/3 * (pump_col_piping_ir**2 * distance_to_connector_begin - loop_piping_ir**2 * distance_to_connector_end) # Volume of a larger cone minus volume of a smaller cone
+    pump_column_and_connector_volume = pump_column_volume + \
+                                       column_to_connector_elbow_volume + \
+                                       connector_volume
+
+    total_volume = capsule_volume + loop_volume + pump_column_and_connector_volume
+    with open('volume.txt', 'w') as f:
+        f.write(str(total_volume))
+
+    heu.volume = total_volume
+    print(f"Total fuel volume: {total_volume}")
 
     ###############################################################################
     #                           Region Definitions
@@ -415,14 +485,14 @@ def create_model(element_position):
     # Pump column and connector regions
     # ---------------------------------
     inner_pump_column_pipe_region = -inner_pump_column_pipe & +capsule_top & -end_column
-    inner_column_to_connector_elbow_region = -inner_column_to_connector_elbow & +end_column & -begin_connector # & ~column_to_connector_elbow_corner_region
+    inner_column_to_connector_elbow_region = -inner_column_to_connector_elbow & +end_column & -begin_connector
     inner_column_elbow_to_piping_connector_region = -inner_column_elbow_to_piping_connector & +begin_connector & -end_upper_transverse_pipe
     inner_pump_col_and_connector_region = inner_pump_column_pipe_region | \
                                         inner_column_to_connector_elbow_region | \
                                         inner_column_elbow_to_piping_connector_region
 
     outer_pump_column_pipe_region = -outer_pump_column_pipe & +inner_pump_column_pipe & +capsule_top & -end_column
-    outer_column_to_connector_elbow_region = (-outer_column_to_connector_elbow & +inner_column_to_connector_elbow & +end_column & -begin_connector) # | column_to_connector_elbow_corner_region
+    outer_column_to_connector_elbow_region = (-outer_column_to_connector_elbow & +inner_column_to_connector_elbow & +end_column & -begin_connector)
     outer_column_elbow_to_piping_connector_region = -outer_column_elbow_to_piping_connector & +inner_column_elbow_to_piping_connector & +begin_connector & -end_upper_transverse_pipe
     outer_pump_col_and_connector_region = outer_pump_column_pipe_region | \
                                         outer_column_to_connector_elbow_region | \
@@ -431,8 +501,8 @@ def create_model(element_position):
     # ---------------
     # Capsule regions
     # ---------------
-    inner_capsule_cyl_region = -inner_capsule_cyl & -capsule_upper_sphere_plane & +capsule_lower_sphere_plane
-    inner_capsule_region = (inner_capsule_cyl_region | -inner_capsule_top_sphere | -inner_capsule_bot_sphere) & -capsule_top & +capsule_bot & -inner_capsule_cyl
+    inner_capsule_cyl_region = -inner_capsule_cyl & -capsule_upper_sphere_plane & +capsule_lower_sphere_plane & -inner_capsule_cyl
+    inner_capsule_region = (inner_capsule_cyl_region | (-inner_capsule_top_sphere & -outer_capsule_cyl) | (-inner_capsule_bot_sphere & -outer_capsule_cyl)) & -capsule_top & +capsule_bot
 
     outer_capsule_cyl_region = -outer_capsule_cyl & +inner_capsule_cyl & -capsule_upper_sphere_plane & +capsule_lower_sphere_plane & -outer_capsule_cyl
     outer_capsule_top_sphere_region = -outer_capsule_top_sphere & +inner_capsule_top_sphere & -outer_capsule_cyl_sphere_thickness & +capsule_upper_sphere_plane
@@ -446,12 +516,16 @@ def create_model(element_position):
     # ------------------
     NE_gt_region           = -NE_gt_outer      & +NE_gt_inner      & +gt_bot & -gt_top
     NE_element_clad_region = -NE_element_outer & +NE_element_inner & +element_bot & -element_top
+    NE_air_region          = -NE_gt_inner & ~NE_element_clad_region & +gt_bot & -gt_top
     SE_gt_region           = -SE_gt_outer      & +SE_gt_inner      & +gt_bot & -gt_top
     SE_element_clad_region = -SE_element_outer & +SE_element_inner & +element_bot & -element_top
+    SE_air_region          = -SE_gt_inner & ~SE_element_clad_region & +gt_bot & -gt_top
     SW_gt_region           = -SW_gt_outer      & +SW_gt_inner      & +gt_bot & -gt_top
     SW_element_clad_region = -SW_element_outer & +SW_element_inner & +element_bot & -element_top
+    SW_air_region          = -SW_gt_inner & ~SW_element_clad_region & +gt_bot & -gt_top
     NW_gt_region           = -NW_gt_outer      & +NW_gt_inner      & +gt_bot & -gt_top
     NW_element_clad_region = -NW_element_outer & +NW_element_inner & +element_bot & -element_top
+    NW_air_region          = -NW_gt_inner & ~NW_element_clad_region & +gt_bot & -gt_top
 
     # -----------------------
     # Control element regions
@@ -470,15 +544,20 @@ def create_model(element_position):
     vessel_region = (outer_loop_region | \
                     outer_capsule_region | \
                     outer_pump_col_and_connector_region)
-    reflector_region = -reflector & ~-reactor_cavity & +z1 & -z2 & ~fuel_region & ~vessel_region
     control_element_region = (NE_element_region | \
                             SE_element_region | \
                             SW_element_region | \
-                            NW_element_region) & ~reflector_region & ~fuel_region & ~vessel_region
+                            NW_element_region) & ~fuel_region & ~vessel_region
     gt_and_clad_region = (NE_element_clad_region | NE_gt_region | \
                         SE_element_clad_region | SE_gt_region | \
                         SW_element_clad_region | SW_gt_region | \
-                        NW_element_clad_region | NW_gt_region) & ~reflector_region & ~fuel_region & ~vessel_region
+                        NW_element_clad_region | NW_gt_region) & ~fuel_region & ~vessel_region
+    reflector_region = -reflector & ~-reactor_cavity & +z1 & -z2 & \
+                       ~fuel_region & ~vessel_region & \
+                       ~NW_air_region & ~NE_air_region & \
+                       ~SW_air_region & ~SE_air_region & \
+                       ~control_element_region & ~gt_and_clad_region & \
+                       -reflector_top & +reflector_bot
     air_region = +x1 & -x2 & +y1 & -y2 & +z1 & -z2 & ~fuel_region & ~control_element_region & \
                 ~gt_and_clad_region & ~vessel_region & ~reflector_region
 
@@ -547,71 +626,72 @@ def create_model(element_position):
     ###############################################################################
     #                           Generate Plots
     ###############################################################################
-    xy_plot = openmc.Plot(name='xy_plot')
-    xy_plot.basis = 'xy'
-    xy_plot.color_by = 'material'
-    xy_plot.pixels = (int(5*(xmax - xmin)), int(5*(ymax - ymin)))
-    xy_plot.width = (xmax - xmin, ymax - ymin)
-    xy_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
-    xy_plot.colors = {
-        heu: 'red',
-        mgo: 'blue',
-        inc: 'black',
-        air: 'green',
-      ss316: 'gray',
-        b4c: 'cyan'
-    }
+    if plots:
+        xy_plot = openmc.Plot(name='xy_plot')
+        xy_plot.basis = 'xy'
+        xy_plot.color_by = 'material'
+        xy_plot.pixels = (int(10*(xmax - xmin)), int(10*(ymax - ymin)))
+        xy_plot.width = (xmax - xmin, ymax - ymin)
+        xy_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
+        xy_plot.colors = {
+            heu: 'red',
+            mgo: 'blue',
+            inc: 'black',
+            air: 'green',
+        ss316: 'gray',
+            b4c: 'cyan'
+        }
 
-    yz_plot = openmc.Plot(name='yz_plot')
-    yz_plot.basis = 'yz'
-    yz_plot.color_by = 'material'
-    yz_plot.pixels = (int(5*(ymax - ymin)), int(5*(zmax - zmin)))
-    yz_plot.width = (ymax - ymin, zmax - zmin)
-    yz_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
-    yz_plot.colors = {
-        heu: 'red',
-        mgo: 'blue',
-        inc: 'black',
-        air: 'green',
-      ss316: 'gray',
-        b4c: 'cyan'
-    }
+        yz_plot = openmc.Plot(name='yz_plot')
+        yz_plot.basis = 'yz'
+        yz_plot.color_by = 'material'
+        yz_plot.pixels = (int(10*(ymax - ymin)), int(10*(zmax - zmin)))
+        yz_plot.width = (ymax - ymin, zmax - zmin)
+        yz_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
+        yz_plot.colors = {
+            heu: 'red',
+            mgo: 'blue',
+            inc: 'black',
+            air: 'green',
+        ss316: 'gray',
+            b4c: 'cyan'
+        }
 
-    xz_plot = openmc.Plot(name='xz_plot')
-    xz_plot.basis = 'xz'
-    xz_plot.color_by = 'material'
-    xz_plot.pixels = (int(5*(xmax - xmin)), int(5*(zmax - zmin)))
-    xz_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
-    xz_plot.width = (xmax - xmin, zmax - zmin)
-    xz_plot.colors = {
-        heu: 'red',
-        mgo: 'blue',
-        inc: 'black',
-        air: 'green',
-      ss316: 'gray',
-        b4c: 'cyan'
-    }
+        xz_plot = openmc.Plot(name='xz_plot')
+        xz_plot.basis = 'xz'
+        xz_plot.color_by = 'material'
+        xz_plot.pixels = (int(10*(xmax - xmin)), int(10*(zmax - zmin)))
+        xz_plot.origin = ((xmin + xmax)/2, (ymin + ymax)/2, (zmin + zmax)/2)
+        xz_plot.width = (xmax - xmin, zmax - zmin)
+        xz_plot.colors = {
+            heu: 'red',
+            mgo: 'blue',
+            inc: 'black',
+            air: 'green',
+        ss316: 'gray',
+            b4c: 'cyan'
+        }
 
-    xz_plot_kcs = openmc.Plot(name='xz_plot_kcs')
-    xz_plot_kcs.basis = 'xz'
-    xz_plot_kcs.color_by = 'material'
-    xz_plot_kcs.pixels = (int(5*(xmax - xmin)), int(5*(zmax - zmin)))
-    xz_plot_kcs.origin = ((xmin + xmax)/2, element_rectangular_offset, (zmin + zmax)/2)
-    xz_plot_kcs.width = (xmax - xmin, zmax - zmin)
-    xz_plot_kcs.colors = {
-        heu: 'red',
-        mgo: 'blue',
-        inc: 'black',
-        air: 'green',
-      ss316: 'gray',
-        b4c: 'cyan'
-    }
+        xz_plot_kcs = openmc.Plot(name='xz_plot_kcs')
+        xz_plot_kcs.basis = 'xz'
+        xz_plot_kcs.color_by = 'material'
+        xz_plot_kcs.pixels = (int(10*(xmax - xmin)), int(10*(zmax - zmin)))
+        xz_plot_kcs.origin = ((xmin + xmax)/2, element_rectangular_offset, (zmin + zmax)/2)
+        xz_plot_kcs.width = (xmax - xmin, zmax - zmin)
+        xz_plot_kcs.colors = {
+            heu: 'red',
+            mgo: 'blue',
+            inc: 'black',
+            air: 'green',
+        ss316: 'gray',
+            b4c: 'cyan'
+        }
 
-    plots = openmc.Plots()
-    plots += [xy_plot, yz_plot, xz_plot, xz_plot_kcs]
+        plots = openmc.Plots()
+        plots += [xy_plot, yz_plot, xz_plot, xz_plot_kcs]
 
-    plots.export_to_xml()
-    openmc.plot_geometry()
+        plots.export_to_xml()
+        openmc.plot_geometry()
 
     ###############################################################################
     #                   Initialize cross section tallies
@@ -680,18 +760,27 @@ def create_model(element_position):
     ###############################################################################
 
     model = openmc.Model(geometry=geometry, settings=settings_file)
+    model.export_to_xml()
     return model
 
-model = create_model(0)
-model.run(threads=112)
-# crit_height, guesses, keffs = openmc.search_for_keff(create_model, bracket=[0,121], tol=1e-2, print_iterations=True)
-# print(f"Critical height: {crit_height} cm")
+if not os.path.exists('crit_height.txt'):
+    crit_height, guesses, keffs = openmc.search_for_keff(create_model, bracket=[45, 70], tol=1e-3, bracketed_method='brentq', print_iterations=True, run_args={'threads': 112})
+    print(f"Critical height: {crit_height} cm")
 
-# # Create depletion "operator"
-# # openmc.config['chain_file'] = 'chain_simple.xml'
+    with open('crit_height.txt', 'w') as f:
+        f.write(str(crit_height))
+
+# Read critical height
+with open('crit_height.txt', 'r') as f:
+    crit_height = float(f.read())
+
+model = create_model(crit_height)
+
+# Create depletion "operator"
+# openmc.config['chain_file'] = 'chain_simple.xml'
 # openmc.config['chain_file'] = '/projects/MCRE_studies/louime/data/depletion/chain_endfb80_sfr.xml'
-# op = openmc.deplete.CoupledOperator(model)
+op = openmc.deplete.CoupledOperator(model)
 
-# # Scale power to the fraction of the total fuel volume that was explicitly modeled
-# integrator = openmc.deplete.PredictorIntegrator(op, time_steps, power, timestep_units='s')
-# integrator.integrate()
+# Scale power to the fraction of the total fuel volume that was explicitly modeled
+integrator = openmc.deplete.PredictorIntegrator(op, time_steps, power, timestep_units='s')
+integrator.integrate()

@@ -1,0 +1,1 @@
+Convert cross sections to Griffin ISOXML format by running `<your_bluecrab_executable> --ioxml-input mgxs_1g_control.xml`

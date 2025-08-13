@@ -141,6 +141,27 @@ wall_treatment = 'neq'
     block = 'reactor'
     execute_on = 'timestep_begin'
   []
+  [comp_a_u]
+    type = FunctorAux
+    functor = 'superficial_vel_x'
+    variable = 'a_u_var'
+    block = 'reactor pipe pump'
+    execute_on = 'timestep_end'
+  []
+  [comp_a_v]
+    type = FunctorAux
+    functor = 'superficial_vel_y'
+    variable = 'a_v_var'
+    block = 'reactor pipe pump'
+    execute_on = 'timestep_end'
+  []
+  [comp_a_w]
+    type = FunctorAux
+    functor = 'superficial_vel_z'
+    variable = 'a_w_var'
+    block = 'reactor pipe pump'
+    execute_on = 'timestep_end'
+  []
 []
 
 ####################################################################################
@@ -498,6 +519,18 @@ wall_treatment = 'neq'
     type = MooseVariableFVReal
     initial_condition = 900
   []
+  [a_u_var]
+    type = MooseVariableFVReal
+    block = 'reactor pipe pump'
+  []
+  [a_v_var]
+    type = MooseVariableFVReal
+    block = 'reactor pipe pump'
+  []
+  [a_w_var]
+    type = MooseVariableFVReal
+    block = 'reactor pipe pump'
+  []
 []
 
 [AuxKernels]
@@ -668,7 +701,11 @@ wall_treatment = 'neq'
 ################################################################################
 
 [Outputs]
-  exodus = true
+  [out]
+    type = Exodus
+    sampling_blocks = 'reactor pipe pump'
+    execute_on = 'final'
+  []
   print_linear_converged_reason = true  #Originally false
   print_linear_residuals = true   #Originally false
   print_nonlinear_converged_reason = true   #Originally false

@@ -15,13 +15,8 @@ d = 0.10226 # m, pump hydraulic diameter
 ################################################################################
 # GEOMETRY
 ################################################################################
-[Mesh]
-  uniform_refine = 0
-  [fmg]
-    type = FileMeshGenerator
-    file = '../data/meshes/keps_out_ur0.e'
-  []
-[]
+# Mesh
+!include ../inputs/th_mesh.i
 
 ################################################################################
 # EQUATIONS: VARIABLES, KERNELS & BCS
@@ -37,6 +32,7 @@ d = 0.10226 # m, pump hydraulic diameter
     a_v = a_v_var
     a_w = a_w_var
     pressure = pressure
+    block = 'reactor pipe pump'
   []
 []
 

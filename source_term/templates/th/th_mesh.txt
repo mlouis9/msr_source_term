@@ -1,0 +1,7 @@
+[Mesh]
+  uniform_refine = 0
+  [fmg]
+    type = FileMeshGenerator
+    file = '../data/keps_solutions/${mesh_file}'
+  []
+[]

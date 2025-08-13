@@ -305,6 +305,12 @@ template_file_dict_single = {
         'th_num_steps': str(th_num_steps),
         'dt': str(dt),
     },
+    'th/th_user_objects.txt': {
+        'keps_solution': f'\'keps{index}_out.e\'',
+    },
+    'th/th_mesh.txt': {
+        'mesh_file': f'\'keps{index}_out.e\'',
+    },
     'dep_executioner.txt': {
         'start_time': str(start_time),
         'end_time': str(end_time),

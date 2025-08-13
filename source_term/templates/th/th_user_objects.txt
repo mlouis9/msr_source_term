@@ -1,0 +1,8 @@
+[UserObjects]
+  [fluid_solution]
+    type = SolutionUserObject
+    mesh = '../data/keps_solutions/${keps_solution}'
+    system_variables = 'a_u_var a_v_var a_w_var superficial_vel_x superficial_vel_y superficial_vel_z pressure TKE TKED T mu_t'
+    timestep = LATEST
+  []
+[]

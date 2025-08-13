@@ -126,11 +126,13 @@ max_removal_rate = 1
     type = FullSolveMultiApp
     input_files = 'sub_thermo.i'
     execute_on = 'timestep_begin'
+    cli_args = '--n-threads=1'
   []
   [species]
     type = FullSolveMultiApp
     input_files = 'species/sub_species.i'
     execute_on = 'timestep_end'
+    cli_args = '--n-threads=112'
   []
 []
 

@@ -668,10 +668,7 @@ wall_treatment = 'neq'
 ################################################################################
 
 [Outputs]
-  exodus = false
-  [DNP_advection_diffusion]
-    type = Exodus
-  []
+  exodus = true
   print_linear_converged_reason = true  #Originally false
   print_linear_residuals = true   #Originally false
   print_nonlinear_converged_reason = true   #Originally false

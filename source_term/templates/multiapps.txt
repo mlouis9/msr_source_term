@@ -1,0 +1,13 @@
+[MultiApps]
+  [thermo]
+    type = FullSolveMultiApp
+    input_files = '../sub_thermo.i'
+    execute_on = 'timestep_begin'
+  []
+  [species]
+    type = FullSolveMultiApp
+    input_files = '${input_files}'
+    positions = '${positions}'
+    execute_on = 'timestep_end'
+  []
+[]

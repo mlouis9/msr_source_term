@@ -1,0 +1,5 @@
+[Postprocessors]
+  [${element_name}_removal]
+    type = Receiver
+  []${next}
+[]

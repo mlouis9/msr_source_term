@@ -1,8 +1,0 @@
-[Functions]
-  [${isotope_name}_analytic_solution_no_removal]
-    type = ParsedFunction
-    expression = 'if($${${isotope_name}_decay_const} > 0, $${fparse ${isotope_name}_fiss_yield / ${isotope_name}_decay_const} * fiss_rate_density * ${element_name}_removal * (1 - exp( -$${${isotope_name}_decay_const} * ${dt} * (1 - 1/${th_num_steps}) )) + ${isotope_name}_initial_integral * exp( -$${${isotope_name}_decay_const} * ${dt} * (1 - 1/${th_num_steps}) ), ${isotope_name}_initial_integral + $${${isotope_name}_fiss_yield} * fiss_rate_density * ${element_name}_removal * ${dt} * (1 - 1/${th_num_steps}) )'
-    symbol_names = '${isotope_name}_initial_integral fiss_rate_density ${element_name}_removal'
-    symbol_values = '${isotope_name}_initial_integral fiss_rate_density ${element_name}_removal'
-  []${next}
-[]

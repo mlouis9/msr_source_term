@@ -296,12 +296,7 @@ template_file_dict_single = {
         'th_removal_list': 'member[8]',
         'index': str(index)
     },
-    'th/th_executioner.txt': {
-        'th_num_steps': str(th_num_steps),
-        'dt': str(dt),
-        'system_names': 'member[10]',
-    },
-    'th/th_functions_single.txt': {
+    'th/th_global_params.txt': {
         'th_num_steps': str(th_num_steps),
         'dt': str(dt),
     },
@@ -320,7 +315,12 @@ template_file_dict_single = {
         'start_time': str(start_time),
         'end_time': str(end_time),
         'index': str(index),
-    }
+    },
+    'multiapps.txt': {
+        'input_files': 'member[10]',
+        'positions': 'member[11]',
+        'next': '',
+    },
 }
 
 template_file_dict_species_isotope = {
@@ -340,13 +340,6 @@ template_file_dict_species_isotope = {
     'th/th_aux_kernels.txt': {
         'isotope_name': 'member[0]',
         'element_name': 'member[1]',
-        'next': '',
-    },
-    'th/th_functions.txt': {
-        'isotope_name': 'member[0]',
-        'element_name': 'member[1]',
-        'dt': str(dt),
-        'th_num_steps': str(th_num_steps),
         'next': '',
     },
 }
@@ -408,7 +401,8 @@ thermo_elements_list = ' '.join(thermo_elements)
 sum_set_list = ' '.join([ f'{element}SumSet' for element in thermo_elements ])
 thermo_removal_list = ' '.join([ f'{element}_removal' for element in thermo_elements ])
 th_removal_list = ' '.join([ f'{isotope}_th_removal' for isotope in isotopes if element_name(isotope) in species_elements ])
-species_isotopes_list = ' '.join(species_isotopes)
+species_input_files = ' '.join([ f'../species/{isotope}/sub_species.i' for isotope in species_isotopes])
+positions = '0 0 0 '*len(species_isotopes)
 
 iterable = [ 
     ( 
@@ -422,7 +416,8 @@ iterable = [
         thermo_removal_list,
         th_removal_list,
         gas_densities_list,
-        species_isotopes_list,
+        species_input_files,
+        positions,
     ) 
 ]
 create_inputs(iterable, template_file_dict_single, input_dir=input_dir)

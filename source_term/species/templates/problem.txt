@@ -1,4 +1,0 @@
-[Problem]
-  nl_sys_names = '${isotope_names}'
-  previous_nl_solution_required = true
-[]

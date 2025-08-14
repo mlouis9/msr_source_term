@@ -15,12 +15,14 @@ d = 0.10226 # m, pump hydraulic diameter
 ################################################################################
 # GEOMETRY
 ################################################################################
-# Mesh
-!include ../inputs/th_mesh.i
+!include ../../inputs/th_mesh.i
 
 ################################################################################
 # EQUATIONS: VARIABLES, KERNELS & BCS
 ################################################################################
+
+# Global params
+!include ../../inputs/th_global_params.i
 
 [UserObjects]
   [ins_rhie_chow_interpolator]
@@ -43,7 +45,7 @@ d = 0.10226 # m, pump hydraulic diameter
 !include inputs/fv_kernels.i
 
 # User Objects
-!include ../inputs/th_user_objects.i
+!include ../../inputs/th_user_objects.i
 
 [ICs]
   [a_u_var]
@@ -119,6 +121,7 @@ d = 0.10226 # m, pump hydraulic diameter
 
 # Aux variables
 !include inputs/aux_variables.i
+!include inputs/trivial_aux_variables.i
 [AuxVariables]
   [a_u_var]
     type = MooseVariableFVReal
@@ -173,7 +176,9 @@ d = 0.10226 # m, pump hydraulic diameter
 
 # Postprocessors
 !include inputs/postprocessors.i
+!include inputs/trivial_postprocessors.i
 !include inputs/element_postprocessors.i
+!include inputs/trivial_element_postprocessors.i
 
 [Postprocessors]
   [fiss_rate_density]
@@ -193,14 +198,28 @@ d = 0.10226 # m, pump hydraulic diameter
 []
 
 # Functions
-!include ../inputs/th_functions_single.i
-!include ../inputs/th_functions.i
-
-# Problem
-!include inputs/problem.i
+!include inputs/functions.i
+[Functions]
+  [solve_fn]
+    type = ParsedFunction
+    expression = 'if(t > ${fparse dt/th_num_steps}, 1, 0)'
+  []
+[]
 
 # Executioner
-!include ../inputs/th_executioner.i
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  petsc_options_iname = '-pc_type  -pc_hypre_type'
+  petsc_options_value = 'hypre  boomeramg'
+  line_search = 'none'
+  nl_abs_tol = '1e-20'
+  nl_max_its = 30
+  automatic_scaling = true
+  compute_scaling_once = false
+  num_steps = ${th_num_steps}
+  end_time = ${dt}
+[]
 
 # Outputs
 !include inputs/outputs.i

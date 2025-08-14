@@ -1,6 +1,0 @@
-[Functions]
-  [solve_fn]
-    type = ParsedFunction
-    expression = 'if(t > $${fparse ${dt}/${th_num_steps}}, 1, 0)'
-  []
-[]

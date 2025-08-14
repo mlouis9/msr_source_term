@@ -5,3 +5,4 @@
 *.png
 *__pycache__
 *inputs
+tmp_jit_*

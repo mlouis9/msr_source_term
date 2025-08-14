@@ -76,9 +76,14 @@ def build_template_string(iterable, template, substitution_dict, top_level=False
     
     return result
 
-def create_inputs(iterable, template_file_dict, template_dir=Path('templates'), input_dir=Path('inputs'), name_only=True):
+def create_inputs(iterable, template_file_dict, template_dir=Path('templates'), input_dir=Path('inputs'), name_only=True, names=None):
     """Create a set of inputs that are templated (for each iterable) according to a template file dict. This dict has keys of template file names, and
-    associated substitution dicts that specify what expressions (relating to the iterable) should be substituted for each parameter in the template string."""
+    associated substitution dicts that specify what expressions (relating to the iterable) should be substituted for each parameter in the template string.
+    
+    Parameters
+    ----------
+    names:
+        A list of names (no file extension) to name the input files, default None and names are taken from template file names."""
     template_files = list(template_file_dict.keys())
     template_files = [ Path(template_file) for template_file in template_files ]
     substitution_dicts = list(template_file_dict.values())
@@ -90,10 +95,15 @@ def create_inputs(iterable, template_file_dict, template_dir=Path('templates'), 
             template = f.read()
         templates.append(Template(template))
 
+    # Ensure the input directory exists
+    input_dir.mkdir(parents=True, exist_ok=True)
 
     # Now write template into input files for each iterable
     for template_idx, template_file in enumerate(template_files):
-        input_filename = template_file.name.replace(".txt", ".i") if name_only else template_file.replace(".txt", ".i")
+        if names is not None:
+            input_filename = names[template_idx] + '.i'
+        else:
+            input_filename = template_file.name.replace(".txt", ".i") if name_only else template_file.replace(".txt", ".i")
         with open(input_dir / input_filename, 'w') as f:
             template = templates[template_idx]
             substitution_dict = substitution_dicts[template_idx]

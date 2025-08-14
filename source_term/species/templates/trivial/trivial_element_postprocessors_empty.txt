@@ -1,0 +1,3 @@
+[Postprocessors]
+  # Empty to avoid segfault when including
+[]

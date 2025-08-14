@@ -1,5 +1,6 @@
 [Outputs]
   csv = true
+  exodus = true
   [th_removal]
     type = CSV
     show = '${th_removal_list}'

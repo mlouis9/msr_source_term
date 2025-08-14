@@ -11,6 +11,8 @@ import scipy
 import periodictable
 from thermo.chemical import Chemical
 import yaml
+from pathlib import Path
+import shutil
 
 cm2tom2 = 1E-04
 cm3tom3 = 1E-06
@@ -87,64 +89,196 @@ def cumulative_fission_yield(isotope, tg_fluxes, fy_dictionary):
 
     return sum(groups_integral_yield) / sum(groups_flux_integral)
 
-# Constants
+u235 = openmc.data.FissionProductYields('../data/dt/nfy-092_U_235.endf')
 
-template_file_dict = {
-    'constants.txt': {
-        'isotope_name': 'member[0]',
-        'molecular_diffusion_coef': 'member[2][ element_name(member[0], format_lowercase=True) ]',
-        'fiss_yield': 'member[3]',
-        'decay_const': 'member[4]',
-        'next': '',
-    },
-    'variables.txt': {
-        'isotope_name': 'member[0]',
-        'next': '',
-    },
-    'fv_kernels.txt': {
-        'isotope_name': 'member[0]',
-        'next': '',
-    },
-    'postprocessors.txt': {
-        'isotope_name': 'member[0]',
-        'element_name': 'member[5]',
-        'next': '',
-    },
-    'functions.txt': {
-        'isotope_name': 'member[0]',
-        'element_name': 'member[5]',
-        'next': '',
-    },
-    'problem.txt': {
-        'isotope_names': 'member[1]',
-    },
-    # Aux kernels/variables for MultiAppCopyTransfers
-    'aux_kernels.txt': {
-        'isotope_name': 'member[0]',
-        'next': '',
-    },
-    'aux_variables.txt': {
-        'isotope_name': 'member[0]',
-        'next': '',
+def isotopes_create_inputs(isotope, trivial_isotopes):
+    # Constants
+
+    template_file_dict = {
+        'constants.txt': {
+            'isotope_name': 'member[0]',
+            'molecular_diffusion_coef': 'member[2][ element_name(member[0], format_lowercase=True) ]',
+            'fiss_yield': 'member[3]',
+            'decay_const': 'member[4]',
+            'next': '',
+        },
+        'variables.txt': {
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+        'fv_kernels.txt': {
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+        'postprocessors.txt': {
+            'isotope_name': 'member[0]',
+            'element_name': 'member[5]',
+            'next': '',
+        },
+        'functions.txt': {
+            'isotope_name': 'member[0]',
+            'element_name': 'member[5]',
+            'next': '',
+        },
+        # Aux kernels/variables for MultiAppCopyTransfers
+        'aux_kernels.txt': {
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+        'aux_variables.txt': {
+            'isotope_name': 'member[0]',
+            'next': '',
+        }
     }
-}
 
-template_file_dict_element = {
-    'element_postprocessors.txt': {
-        'element_name': 'member[0]',
-        'next': '',
+    template_file_dict_element = {
+        'element_postprocessors.txt': {
+            'element_name': 'member[0]',
+            'next': '',
+        }
     }
-}
 
-template_file_dict_single = {
-    'outputs.txt': {
-        'th_removal_list': 'member[0]',
+    template_file_dict_single = {
+        'outputs.txt': {
+            'th_removal_list': 'member[0]',
+        },
     }
-}
 
-# Read in list of isotopes and elements
-elements = list(pd.read_csv('../data/simulation_parameters/species_elements.csv').keys())
+    # Trivial template file dicts
+    template_file_dict_trivial = {
+        'trivial/trivial_aux_variables.txt':{
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+        'trivial/trivial_postprocessors.txt':{
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+    }
+
+    template_file_dict_element_trivial = {
+        'trivial/trivial_element_postprocessors.txt': {
+            'element_name': 'member[0]',
+            'next': '',
+        },
+    }
+
+    template_file_dict_element_trivial_empty = {
+        'trivial/trivial_element_postprocessors_empty.txt': {}
+    }
+
+    isotopes = [isotope]
+    isotope_list = [ ' '.join(isotopes) for isotope in isotopes ]
+
+    # Stokes radii for each element (in m)
+    stokes_radii = {
+        'Kr': 180E-12, # Obtained from kinetic diameter: https://en.wikipedia.org/wiki/Kinetic_diameter
+        'Xe': 198E-12, # Obtained from kinetic diameter: https://en.wikipedia.org/wiki/Kinetic_diameter
+        'Cs': 343E-12, # Obtained from Van Der Waals Radius: https://en.wikipedia.org/wiki/Caesium
+        'Cl': 343E-12,
+    }
+
+    # ----------------------------------------------------------------------------------------
+    # Salt properties necessary for Wilke-Chang estimation of molecular diffusion coefficients
+    # ----------------------------------------------------------------------------------------
+    association_factor = 2.26 # Conservatively estimate as that for water
+
+    # Masses (g/mol), obtained from JANIS
+    M_Na   = 22.99
+    M_Cl   = 35.453
+    M_Mg   = 24.305
+    M_U232 = 232.037146
+    M_U234 = 234.040946	
+    M_U235 = 235.043923	
+    M_U236 = 236.045562
+    M_U238 = 238.050783
+
+    # Composition (atomic) fractions of fuel salt, obtained from: https://collab.terrapower.com/display/MCREX/RCS-CALC-0014+%7C%7C+Molecular+Composition+of+Fuel+Salt+Diluted+with+Flush+Salt Table 9-1
+    af_NaCl = 0.6648
+    af_UCl3 = 0.3245
+    af_MgCl2 = 0.0107 # flush salt
+
+    # Composition (weight) fractions of Uranium isotopes, obtained from: https://collab.terrapower.com/display/MCREX/FUEL-EDD-0001+%7C%7C+NaCl-UCl3+Eutectic+Salt+Thermophysical+Properties Table 8-1
+    wf_U232 = 1.76E-10
+    wf_U234 = 9.83E-03
+    wf_U235 = 9.32E-01
+    wf_U236 = 2.73E-03
+    wf_U238 = 5.56E-02
+
+    # Convert the weight fractions to atomic fractions via the expression $af_i = \frac{\frac{wf_i}{M_i}}{\sum_i \frac{wf_i}{M_i}}$
+    denom   = wf_U232/M_U232 + wf_U234/M_U234 + wf_U235/M_U235 + wf_U236/M_U236 + wf_U238/M_U238
+    af_U232 = ( wf_U232 / M_U232 ) / denom
+    af_U234 = ( wf_U234 / M_U234 ) / denom
+    af_U235 = ( wf_U235 / M_U235 ) / denom
+    af_U236 = ( wf_U236 / M_U236 ) / denom
+    af_U238 = ( wf_U238 / M_U238 ) / denom
+
+    M_U = af_U232 * M_U232 + af_U234 * M_U234 + af_U235 * M_U235 + af_U236 * M_U236 + af_U238 * M_U238
+    M_tot = af_NaCl * (M_Na + M_Cl) + af_UCl3 * (M_U + 3*M_Cl) + af_MgCl2 * (M_Mg + 2 * M_Cl)
+    # ----------------------------------------------------------------------------------------
+
+    # Molecular diffusion coefficients for each element computed from the Stokes-Einstein relation
+    dynamic_viscosity = 4.9E-3 # Pa*s Obtained from https://collab.terrapower.com/display/MCREX/FUEL-EDD-0001+%7C%7C+NaCl-UCl3+Eutectic+Salt+Thermophysical+Properties, Table 9-1 (L_Viscosity_650)
+    T = 923.15
+    diffusion_coefficients = { element: wilke_chang_diffusion_coef_gas(association_factor, M_tot, dynamic_viscosity, T, element) for element in elements }
+    # diffusion_coefficients = { element: stokes_einstein_diffusion_coef(stokes_radius, dynamic_viscosity, T) for element, stokes_radius in stokes_radii.items() }
+    diffusion_coefficients = [ diffusion_coefficients for isotope in isotopes ]
+
+    fission_yields = [ cumulative_fission_yield(lowercase_isotope_name(isotope), TG_FLUXES, u235) for isotope in isotopes ]
+
+    # Get decay constants for each isotope
+    decay_constants = [ openmc.data.decay_constant(lowercase_isotope_name(isotope)) for isotope in isotopes ]
+    species_surrogates = [ inv_surrogate_dict[element_name(isotope)] for isotope in isotopes ]
+
+    iterable = list(zip(
+        isotopes, 
+        isotope_list, 
+        diffusion_coefficients, 
+        fission_yields, 
+        decay_constants,
+        species_surrogates,
+    ))
+    create_inputs(iterable, template_file_dict, input_dir=Path(f'{isotope}/inputs'))
+
+    # Trivial inputs
+    iterable = list(zip(trivial_isotopes))
+    create_inputs(iterable, template_file_dict_trivial, input_dir=Path(f'{isotope}/inputs'))
+
+    #############################
+    # Create Element-Wise Inputs
+    #############################
+
+    species_surrogates_set = list(set(species_surrogates))
+    iterable = list(zip(species_surrogates_set))
+    create_inputs(iterable, template_file_dict_element, input_dir=Path(f'{isotope}/inputs'))
+
+    # Trivial inputs
+    trivial_species_surrogates = [ inv_surrogate_dict[element_name(isotope)] for isotope in trivial_isotopes if inv_surrogate_dict[element_name(isotope)] != inv_surrogate_dict[element_name(isotopes[0])] ]
+    trivial_species_surrogates_set = list(set(trivial_species_surrogates))
+    iterable = list(zip(trivial_species_surrogates_set))
+    if iterable:
+        create_inputs(iterable, template_file_dict_element_trivial, input_dir=Path(f'{isotope}/inputs'))
+    else:
+        create_inputs(list(zip([''])), template_file_dict_element_trivial_empty, input_dir=Path(f'{isotope}/inputs'), names=['trivial_element_postprocessors'])
+
+    #######################
+    # Create Single Inputs
+    #######################
+
+    th_removal_list = ' '.join([ isotope + '_th_removal' for isotope in isotopes ])
+    iterable = [
+        (
+            th_removal_list,
+        )
+    ]
+    create_inputs(iterable, template_file_dict_single, input_dir=Path(f'{isotope}/inputs'))
+    shutil.copy('sub_species.i', f'{isotope}/sub_species.i')
+
+
+# Read in list of elements and isotopes
 isotopes = list(pd.read_csv('../data/simulation_parameters/isotopes.csv').keys())
+elements = list(pd.read_csv('../data/simulation_parameters/species_elements.csv').keys())
+
 lowercase_isotopes = [lowercase_isotope_name(isotope) for isotope in isotopes]
 # Read in and process surrogate data
 thermo_elements = list(pd.read_csv('../data/simulation_parameters/thermo_elements.csv').keys())
@@ -154,97 +288,12 @@ with open('../data/simulation_parameters/surrogates.yaml', 'r') as f:
 _, inv_surrogate_dict, _ = process_surrogates(lowercase_isotopes, surrogates_dict)
 
 isotopes = [ isotope for isotope in lowercase_isotopes if element_name(isotope) in elements ]
-isotope_list = [ ' '.join(isotopes) for isotope in isotopes ]
 print(f"Number of isotopes: {len(isotopes)}")
 
-# Stokes radii for each element (in m)
-stokes_radii = {
-    'Kr': 180E-12, # Obtained from kinetic diameter: https://en.wikipedia.org/wiki/Kinetic_diameter
-    'Xe': 198E-12, # Obtained from kinetic diameter: https://en.wikipedia.org/wiki/Kinetic_diameter
-    'Cs': 343E-12, # Obtained from Van Der Waals Radius: https://en.wikipedia.org/wiki/Caesium
-    'Cl': 343E-12,
-}
+# ---------------------------
+# Generate sub_species inputs
+# ---------------------------
 
-# ----------------------------------------------------------------------------------------
-# Salt properties necessary for Wilke-Chang estimation of molecular diffusion coefficients
-# ----------------------------------------------------------------------------------------
-association_factor = 2.26 # Conservatively estimate as that for water
-
-# Masses (g/mol), obtained from JANIS
-M_Na   = 22.99
-M_Cl   = 35.453
-M_Mg   = 24.305
-M_U232 = 232.037146
-M_U234 = 234.040946	
-M_U235 = 235.043923	
-M_U236 = 236.045562
-M_U238 = 238.050783
-
-# Composition (atomic) fractions of fuel salt, obtained from: https://collab.terrapower.com/display/MCREX/RCS-CALC-0014+%7C%7C+Molecular+Composition+of+Fuel+Salt+Diluted+with+Flush+Salt Table 9-1
-af_NaCl = 0.6648
-af_UCl3 = 0.3245
-af_MgCl2 = 0.0107 # flush salt
-
-# Composition (weight) fractions of Uranium isotopes, obtained from: https://collab.terrapower.com/display/MCREX/FUEL-EDD-0001+%7C%7C+NaCl-UCl3+Eutectic+Salt+Thermophysical+Properties Table 8-1
-wf_U232 = 1.76E-10
-wf_U234 = 9.83E-03
-wf_U235 = 9.32E-01
-wf_U236 = 2.73E-03
-wf_U238 = 5.56E-02
-
-# Convert the weight fractions to atomic fractions via the expression $af_i = \frac{\frac{wf_i}{M_i}}{\sum_i \frac{wf_i}{M_i}}$
-denom   = wf_U232/M_U232 + wf_U234/M_U234 + wf_U235/M_U235 + wf_U236/M_U236 + wf_U238/M_U238
-af_U232 = ( wf_U232 / M_U232 ) / denom
-af_U234 = ( wf_U234 / M_U234 ) / denom
-af_U235 = ( wf_U235 / M_U235 ) / denom
-af_U236 = ( wf_U236 / M_U236 ) / denom
-af_U238 = ( wf_U238 / M_U238 ) / denom
-
-M_U = af_U232 * M_U232 + af_U234 * M_U234 + af_U235 * M_U235 + af_U236 * M_U236 + af_U238 * M_U238
-M_tot = af_NaCl * (M_Na + M_Cl) + af_UCl3 * (M_U + 3*M_Cl) + af_MgCl2 * (M_Mg + 2 * M_Cl)
-# ----------------------------------------------------------------------------------------
-
-# Molecular diffusion coefficients for each element computed from the Stokes-Einstein relation
-dynamic_viscosity = 4.9E-3 # Pa*s Obtained from https://collab.terrapower.com/display/MCREX/FUEL-EDD-0001+%7C%7C+NaCl-UCl3+Eutectic+Salt+Thermophysical+Properties, Table 9-1 (L_Viscosity_650)
-T = 923.15
-diffusion_coefficients = { element: wilke_chang_diffusion_coef_gas(association_factor, M_tot, dynamic_viscosity, T, element) for element in elements }
-# diffusion_coefficients = { element: stokes_einstein_diffusion_coef(stokes_radius, dynamic_viscosity, T) for element, stokes_radius in stokes_radii.items() }
-diffusion_coefficients = [ diffusion_coefficients for isotope in isotopes ]
-
-# Calculate (cumulative) fission yields for each isotope
-u235 = openmc.data.FissionProductYields('../data/dt/nfy-092_U_235.endf')
-fission_yields = [ cumulative_fission_yield(lowercase_isotope_name(isotope), TG_FLUXES, u235) for isotope in isotopes ]
-
-# Get decay constants for each isotope
-decay_constants = [ openmc.data.decay_constant(lowercase_isotope_name(isotope)) for isotope in isotopes ]
-species_surrogates = [ inv_surrogate_dict[element_name(isotope)] for isotope in isotopes ]
-
-iterable = list(zip(
-    isotopes, 
-    isotope_list, 
-    diffusion_coefficients, 
-    fission_yields, 
-    decay_constants,
-    species_surrogates,
-))
-create_inputs(iterable, template_file_dict)
-
-#############################
-# Create Element-Wise Inputs
-#############################
-
-species_surrogates_set = list(set(species_surrogates))
-iterable = list(zip(species_surrogates_set))
-create_inputs(iterable, template_file_dict_element)
-
-#######################
-# Create Single Inputs
-#######################
-
-th_removal_list = ' '.join([ isotope + '_th_removal' for isotope in isotopes ])
-iterable = [
-    (
-        th_removal_list,
-    )
-]
-create_inputs(iterable, template_file_dict_single)
+for index, isotope in enumerate(isotopes):
+    trivial_isotopes = isotopes[:index] + isotopes[index + 1:]
+    isotopes_create_inputs(isotope, trivial_isotopes)

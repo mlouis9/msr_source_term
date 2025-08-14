@@ -1,0 +1,12 @@
+[Postprocessors]
+  ####### ${isotope_name} Postprocessors #######
+  [${isotope_name}_initial_integral]
+    type = Receiver
+  []
+  [${isotope_name}_gas]
+    type = Receiver
+  []
+  [${isotope_name}_th_removal]
+    type = Receiver
+  []${next}
+[]

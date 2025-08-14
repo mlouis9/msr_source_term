@@ -1,9 +1,7 @@
 # ---------
 # Constants
 # ---------
-# From script: 285135.4
-# V = 294000                                        # Volume of fuel salt, obtained from: https://collab.terrapower.com/display/MCREX/PLT-CALC-0012+%7C%7C+MCRE+Neutronics+Model+Description Table 8-13 (page 62)
-V =  289116.4440803906                            # cm3, obtained from: https://collab.terrapower.com/display/MCREX/PLT-CALC-0012+%7C%7C+MCRE+Neutronics+Model+Description Table 8-13 (page 62)
+V =  331000                                       # cm3, from MCRE-ENG-PRSNT-0029 Rev1A
 at_per_bcm_to_moles_per_cm3 = 1.6605390561442868  # 10^24 ( at/b*cm )/( at/cm^3 ) * 1/(6.0221408 x 10^23)( moles/at ) = 10/6.0221408
 stability_eps = 1e-03                             # Excess chlorine (moles) to ensure Thermochimica GEM solve is stable
 ar_moles = 2.021
@@ -121,20 +119,8 @@ max_removal_rate = 1
 # Controls
 # !include inputs/dep_controls.i
 
-[MultiApps]
-  [thermo]
-    type = FullSolveMultiApp
-    input_files = 'sub_thermo.i'
-    execute_on = 'timestep_begin'
-    cli_args = '--n-threads=1'
-  []
-  [species]
-    type = FullSolveMultiApp
-    input_files = 'species/sub_species.i'
-    execute_on = 'timestep_end'
-    cli_args = '--n-threads=112'
-  []
-[]
+# MultiApps
+!include inputs/multiapps.i
 
 # Thermochimica transfers
 !include inputs/thermo_transfers.i

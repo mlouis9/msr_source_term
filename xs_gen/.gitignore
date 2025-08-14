@@ -2,4 +2,8 @@
 *.png
 *.h5
 *.vti
+*.csv
+*.txt
+*.out
+*.pkl
 !mgxs_1g_control.xml

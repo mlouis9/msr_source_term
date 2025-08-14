@@ -7,7 +7,7 @@
     region_volume = ${V}
     
     # Library specification
-    isoxml_mglib_file = '../mgxs_1g.xml'
+    isoxml_mglib_file = '../data/simulation_parameters/mgxs_1g.xml'
     isoxml_mglib_name = 'mgxs'
     library_id = 1
     grid_names = 'depletion_s'

@@ -726,6 +726,9 @@ def create_model(element_position, plots=False):
     library.build_library()
     library.add_to_tallies_file(tallies_file, merge=True)
 
+    # Export library object as a pickle, to be loaded later by read_output.py
+    library.dump_to_file()
+
     # Fission rate tally
     fuel_filter = openmc.CellFilter(fuel.id)
     energy_filter = openmc.EnergyFilter(group_edges)
@@ -747,13 +750,12 @@ def create_model(element_position, plots=False):
     tallies_file.append(heating_tally)
 
     # Create energy filter using SHEM-361 group structure
-    shem_filter = openmc.EnergyFilter(openmc.mgxs.GROUP_STRUCTURES['SHEM-361'])
+    energy_filter = openmc.EnergyFilter(openmc.mgxs.GROUP_STRUCTURES['CASMO-2'])
+    flux_tally = openmc.Tally(name='flux')
+    flux_tally.filters = [energy_filter]
+    flux_tally.scores = ['flux']
 
-    tally_shem = openmc.Tally(name='flux')
-    tally_shem.filters = [shem_filter]
-    tally_shem.scores = ['flux']
-
-    tallies_file.append(tally_shem)
+    tallies_file.append(flux_tally)
 
     # Export to "tallies.xml"
     tallies_file.export_to_xml()

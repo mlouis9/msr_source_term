@@ -18,7 +18,7 @@ cm2tom2 = 1E-04
 cm3tom3 = 1E-06
 PastocP = 1E+03
 R = 8.314 # J/(mol * K)
-TG_FLUXES = np.array([1.92e15, 1.92e15])
+TG_FLUXES = np.loadtxt('../data/simulation_parameters/tg_fluxes.txt')
 
 def get_boiling_point(element_name):
     chemical = Chemical(element_name)

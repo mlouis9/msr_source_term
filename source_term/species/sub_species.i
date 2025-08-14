@@ -6,8 +6,8 @@ mu = 0.005926
 # Species transport constants
 ################################################################################
 Sc_t = 0.7
-A_interface = 1
-V_pump = 1
+A_interface = 545.57 # Assumed from MCRE-ENG-PRSNT-0029Rev1A, (pi * (2 * r_pump_column)^2)
+V_pump = 9930 # Obtained from paraview 
 d = 0.10226 # m, pump hydraulic diameter
 
 !include inputs/constants.i

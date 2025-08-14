@@ -22,9 +22,7 @@ args = parser.parse_args()
 num_procs = args.procs
 num_cores = args.cores
 input_only = args.input_only
-bluecrab_run_command = f"""
-mpiexec -n {num_procs} {params['blue_crab_executable']} -i run_dep.i --n-threads={num_cores}
-"""
+bluecrab_run_command = f"ml use.moose moose-dev-openmpi/2025.07.22; mpiexec -n {num_procs} moose-dev-exec \"{params['blue_crab_executable']} -i run_dep.i --n-threads={num_cores}\""
 
 input_generator_run_command_template = Template(
 """python input_generator.py -e '{"dt": ${dt}, "start_time": ${start_time}, """

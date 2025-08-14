@@ -9,15 +9,18 @@ import openmc.deplete
 import numpy as np
 import openmc.mgxs as mgxs
 import pandas as pd
+import yaml
 
-###############################################################################
-#               Materials Parameters (Taken from MCRE-ENG-PRSNT-0029Rev1A)
-###############################################################################
+with open('../source_term/data/simulation_parameters/parameters.yaml', 'r') as f:
+    params = yaml.safe_load(f)
 
 def fuel_density(T): # Temp in K
     return 4.2126E+03 - 1.0686E+00 * T
 
 def create_model(element_position, plots=False):
+    ###############################################################################
+    #               Materials Parameters (Taken from MCRE-ENG-PRSNT-0029Rev1A)
+    ###############################################################################
     T_fuel = 900 # K
     kg_per_m3_to_cm_per_cm3 = 0.001
     density = fuel_density(T_fuel) * kg_per_m3_to_cm_per_cm3
@@ -332,7 +335,7 @@ def create_model(element_position, plots=False):
     element_or = 3.016       # 2" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     element_height = 95.3    # from MCRE-ENG-PRSNT-0029Rev1A
     max_element_travel = 112
-    max_element_height = element_height + max_element_travel
+    max_element_height = element_height/2 + max_element_travel
     gt_ir = 3.49             # 2.5" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     gt_or = 3.65             # 2.5" NPS SCH.5 (from MCRE-ENG-PRSNT-0029Rev1A)
     element_clearance = 2.54 # from MCRE-ENG-PRSNT-0029Rev1A
@@ -361,16 +364,16 @@ def create_model(element_position, plots=False):
     element_bot = openmc.ZPlane(z0=-element_height/2 + element_position)
     element_top = openmc.ZPlane(z0=element_height/2 + element_position)
     gt_bot = openmc.ZPlane(z0=-element_height/2)
-    gt_top = openmc.ZPlane(z0=max_element_height/2)
+    gt_top = openmc.ZPlane(z0=max_element_height)
 
     # Universe boundary
-    eps = 1 # 1 cm of extra room to avoid issues with reflector surfaces that would otherwise be coincident with some of these boundaries
+    eps = 1 # cm of extra room to avoid issues with reflector surfaces that would otherwise be coincident with some of these boundaries
     xmin = -reflector_long_side_length/2
     xmax = reflector_long_side_length/2 + loop_x_length
     ymin = -reflector_long_side_length/2
     ymax = reflector_long_side_length/2
     zmin = -reflector_height/2
-    zmax = max(reflector_height/2, element_height/2 + element_position) # To allow extra room for fully removed control element
+    zmax = max_element_height # To allow extra room for fully removed control element
     x1 = openmc.XPlane(xmin - eps, boundary_type='vacuum')
     x2 = openmc.XPlane(xmax + eps, boundary_type='vacuum')
     y1 = openmc.YPlane(ymin - eps, boundary_type='vacuum')
@@ -774,13 +777,18 @@ if not os.path.exists('crit_height.txt'):
 with open('crit_height.txt', 'r') as f:
     crit_height = float(f.read())
 
-model = create_model(crit_height)
+model = create_model(crit_height, plots=True)
 
 # Create depletion "operator"
-# openmc.config['chain_file'] = 'chain_simple.xml'
-# openmc.config['chain_file'] = '/projects/MCRE_studies/louime/data/depletion/chain_endfb80_sfr.xml'
+openmc.config['chain_file'] = '../source_term/data/depletion_chain/chain_endfb80_sfr.xml'
 op = openmc.deplete.CoupledOperator(model)
 
 # Scale power to the fraction of the total fuel volume that was explicitly modeled
-integrator = openmc.deplete.PredictorIntegrator(op, time_steps, power, timestep_units='s')
+power_history = pd.read_csv('../source_term/data/simulation_parameters/power_history.csv')
+power_history = power_history.to_numpy()
+rated_power = params['rated_power']
+time_steps = power_history[1:,0]
+time_steps = np.concatenate((np.array([time_steps[0]]), time_steps[1:] - time_steps[:-1])) 
+power = rated_power * power_history[1:, 1]
+integrator = openmc.deplete.PredictorIntegrator(op, time_steps, list(power), timestep_units='s')
 integrator.integrate()

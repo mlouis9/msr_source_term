@@ -1,4 +1,5 @@
 rated_power: 150000 # W
 th_num_steps: 4
 dts: [32400, 34200, 3600] # seconds
-blue_crab_executable: /projects/MCRE_studies/louime/bin/blue_crab-opt_v7
+blue_crab_executable: "SET ME, e.g. /projects/bluecrab_build/bin/blue_crab-opt"
+moose_dev_env: "SET ME, e.g. moose-dev-openmpi/2025.07.22"

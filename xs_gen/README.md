@@ -1,1 +1,4 @@
-Convert cross sections to Griffin ISOXML format by running `<your_bluecrab_executable> --ioxml-input mgxs_1g_control.xml`
+# Overview
+- `xs_gen.py` is a python script used for running the OpenMC depletion simulation to generate 1 group cross sections. Run this in your OpenMC environment preferabbly multicore on HPC resources.
+  - You may manually convert the generated cross sections to Griffin ISOXML format by running `<your_bluecrab_executable> --ioxml-input mgxs_1g_control.xml`, but it is suggested that you run `prepare_data.py` which will automatically do this and copy the results to the correct locations in the `../source_term/data` directory.
+- `mgxs_1g_control.xml` is the control file used by Griffin when doing the conversion to ISOXML, and specifies information about the cross section library and the OpenMC files it is constructed from.

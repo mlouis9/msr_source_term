@@ -1,0 +1,4 @@
+pandas~=2.3
+periodictable~=1.7
+pyyaml~=6.0
+thermo~=0.5

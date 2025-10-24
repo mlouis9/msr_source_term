@@ -35,6 +35,7 @@ with open('templates/keps.txt', 'r') as f:
 
 for index, power in enumerate(unique_powers):
     templated_str = template.safe_substitute(power=power)
+    os.makedirs('inputs', exist_ok=True)
     with open(f'inputs/keps{index}.i', 'w') as f:
         f.write(templated_str)
 

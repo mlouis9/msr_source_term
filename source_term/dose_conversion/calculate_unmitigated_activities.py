@@ -85,7 +85,7 @@ isotopics_df = pd.concat(isotopics_df_list, ignore_index=True)
 off_gas_isotopics = defaultdict(float)
 for isotope in isotopes:
     isotopics = isotopics_df[isotope].to_numpy()
-    max_N = np.maximum(isotopics[:-1], isotopics[1:]) * perbcm_to_percm3 # Conver to 1/cm3
+    max_N = np.maximum(isotopics[:-1], isotopics[1:]) * perbcm_to_percm3 # Convert to 1/cm3
     lambdas = lambda_df[isotope].to_numpy()[:-1] # Use previous step values for lambda, based on execution precedence of simulation. Actually used in bateman
     off_gas_isotopics[isotope] += np.sum(lambdas * max_N * timestep_dts[1:])
 

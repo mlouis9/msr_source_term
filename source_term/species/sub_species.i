@@ -40,9 +40,11 @@ d = 0.10226 # m, pump hydraulic diameter
 
 # Variables
 !include inputs/variables.i
+!include inputs/trivial_variables.i
 
 # FV Kernels
 !include inputs/fv_kernels.i
+!include inputs/trivial_fv_kernels.i
 
 # User Objects
 !include ../../inputs/th_user_objects.i
@@ -121,7 +123,6 @@ d = 0.10226 # m, pump hydraulic diameter
 
 # Aux variables
 !include inputs/aux_variables.i
-!include inputs/trivial_aux_variables.i
 [AuxVariables]
   [a_u_var]
     type = MooseVariableFVReal

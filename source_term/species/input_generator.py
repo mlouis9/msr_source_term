@@ -146,7 +146,11 @@ def isotopes_create_inputs(isotope, trivial_isotopes):
 
     # Trivial template file dicts
     template_file_dict_trivial = {
-        'trivial/trivial_aux_variables.txt':{
+        'trivial/trivial_variables.txt':{
+            'isotope_name': 'member[0]',
+            'next': '',
+        },
+        'trivial/trivial_fv_kernels.txt':{
             'isotope_name': 'member[0]',
             'next': '',
         },

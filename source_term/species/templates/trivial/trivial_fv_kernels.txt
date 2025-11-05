@@ -1,0 +1,6 @@
+[FVKernels]
+  [${isotope_name}]
+    type = FVTimeKernel
+    variable = ${isotope_name}
+  []${next}
+[]

@@ -1,4 +1,4 @@
-[AuxVariables]
+[Variables]
   [${isotope_name}]
     type = INSFVScalarFieldVariable
   []${next}
